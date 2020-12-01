@@ -1,4 +1,21 @@
 .table {
-    margin: 100px;
-    width: 80%;
+    margin-top: 5%;
+    // border: 2px solid black;
+}
+
+tr{
+    opacity: 0.65;
+    transition-duration: 0.2s;
+}
+
+tr:hover{
+        opacity:1;
+}
+.header-row{
+    opacity:1;
+}
+th:hover{
+    color: yellowgreen;
+    cursor: pointer;
+    transition-duration: 0.3s;
 }

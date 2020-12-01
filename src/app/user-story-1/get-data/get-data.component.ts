@@ -26,10 +26,8 @@ export class GetDataComponent implements OnInit {
       })
     })
   }
-  getHeader(event: any) { 
-    var target = event.target || event.srcElement || event.currentTarget;
-    var idAttr = target.attributes.id;
-    var value = idAttr.nodeValue;
+  getHeader(event: Event): void { 
+    let value: string = (event.target as Element).id;
     if (value == 'title') {
       this.bugs = [];
       this.ust1.getSortedBugs(value, this.titleDesc).subscribe((data) => {

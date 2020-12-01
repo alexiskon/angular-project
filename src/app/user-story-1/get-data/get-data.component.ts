@@ -25,9 +25,36 @@ export class GetDataComponent implements OnInit {
         this.bugs.push(it)
       })
     })
+
+
+//Second way to get bugs from API
+    // this.ust1.getBugs().subscribe((data) => {
+    //   this.bugs = data.map(it => {
+    //     return {
+    //       id: it.id,
+    //       title: it.title,
+    //       description: it.description,
+    //       priority: it.priority,
+    //       reporter: it.reporter,
+    //       status: it.status,
+    //       updatedAt: it.updatedAt,
+    //       createdAt: it.createdAt,
+    //       comments: it.comments
+    //     };
+    //   })
+    // })
   }
+
   getHeader(event: Event): void { 
+    // We get table header id(e.g. "title") from html 
     let value: string = (event.target as Element).id;
+
+    // According to the id we send a request to the API and we get the sorted
+    // data from url?sort=${id},${order} where order is by default ascending
+    // except for the time when we click multiple times the header so in this 
+    // case we inverse the order. If another header is clicked, then the order  
+    // of the other tabs are changed back to ascending.
+
     if (value == 'title') {
       this.bugs = [];
       this.ust1.getSortedBugs(value, this.titleDesc).subscribe((data) => {

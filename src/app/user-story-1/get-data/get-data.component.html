@@ -1,0 +1,21 @@
+<table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th id="title" scope="col" (click)="getHeader($event)">Title</th>
+        <th id="priority" scope="col" (click)="getHeader($event)">Priority</th>
+        <th id="reporter" scope="col" (click)="getHeader($event)">Reporter</th>
+        <th id="createdAt" scope="col" (click)="getHeader($event)">Date Created</th>
+        <th id="status" scope="col" (click)="getHeader($event)">Status</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of bugs">
+        <td>{{ item.title }}</td>
+        <td>{{ item.priority }}</td>
+        <td>{{ item.reporter }}</td>
+        <td>{{ item.createdAt }}</td>
+        <td>{{ item.status }}</td>
+      </tr>
+    </tbody>
+  </table>

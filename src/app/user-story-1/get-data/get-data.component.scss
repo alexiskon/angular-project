@@ -2,3 +2,9 @@
     margin: 100px;
     width: 80%;
 }
+th:hover {
+    cursor: pointer;
+}
+td:hover {
+    cursor: context-menu;
+}

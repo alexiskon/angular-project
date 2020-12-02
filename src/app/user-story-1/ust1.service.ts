@@ -17,7 +17,7 @@ export class Ust1Service {
     
   }
   getSortedBugs (header: string, desc: boolean): Observable<Bugs[]> {
-    let sortOrder = desc  ? 'desc': 'asc'; 
+    let sortOrder = desc  ? 'asc': 'desc'; 
     let sortedUrl = this.url + '?sort=' + header + ',' + sortOrder;
     return this.http.get<Bugs[]>(sortedUrl)
   }

@@ -12,11 +12,11 @@ export class GetDataComponent implements OnInit {
   constructor(private ust1: Ust1Service) { }
 
   bugs: Bugs[] = [];
-  titleDesc: boolean = false;
-  priorityDesc: boolean = false;
-  reporterDesc: boolean = false;
-  createdAtDesc: boolean = false;
-  statusDesc: boolean = false;
+  titleDesc: boolean = true;
+  priorityDesc: boolean = true;
+  reporterDesc: boolean = true;
+  createdAtDesc: boolean = true;
+  statusDesc: boolean = true;
 
 
   ngOnInit(): void {
@@ -38,10 +38,10 @@ export class GetDataComponent implements OnInit {
         })
       })
       this.titleDesc = !this.titleDesc
-      this.priorityDesc = false;
-      this.reporterDesc = false;
-      this.createdAtDesc = false;
-      this.statusDesc= false;
+      this.priorityDesc = true;
+      this.reporterDesc = true;
+      this.createdAtDesc = true;
+      this.statusDesc= true;
     }else if (value == 'priority') {
       this.bugs = [];
       this.ust1.getSortedBugs(value, this.priorityDesc).subscribe((data) => {
@@ -50,10 +50,10 @@ export class GetDataComponent implements OnInit {
         })
       })
       this.priorityDesc = !this.priorityDesc
-      this.titleDesc = false;
-      this.reporterDesc = false;
-      this.createdAtDesc = false;
-      this.statusDesc= false;
+      this.titleDesc = true;
+      this.reporterDesc = true;
+      this.createdAtDesc = true;
+      this.statusDesc= true;
     }else if (value == 'reporter') {
       this.bugs = [];
       this.ust1.getSortedBugs(value, this.reporterDesc).subscribe((data) => {
@@ -62,10 +62,10 @@ export class GetDataComponent implements OnInit {
         })
       })
       this.reporterDesc = !this.reporterDesc
-      this.titleDesc = false;
-      this.priorityDesc = false;
-      this.createdAtDesc = false;
-      this.statusDesc= false;
+      this.titleDesc = true;
+      this.priorityDesc = true;
+      this.createdAtDesc = true;
+      this.statusDesc= true;
     }else if (value == 'createdAt') {
       this.bugs = [];
       this.ust1.getSortedBugs(value, this.createdAtDesc).subscribe((data) => {
@@ -74,10 +74,10 @@ export class GetDataComponent implements OnInit {
         })
       })
       this.createdAtDesc = !this.createdAtDesc
-      this.titleDesc = false;
-      this.priorityDesc = false;
-      this.reporterDesc = false;
-      this.statusDesc= false;
+      this.titleDesc = true;
+      this.priorityDesc = true;
+      this.reporterDesc = true;
+      this.statusDesc= true;
     }else if (value == 'status') {
       this.bugs = [];
       this.ust1.getSortedBugs(value, this.statusDesc).subscribe((data) => {
@@ -86,10 +86,10 @@ export class GetDataComponent implements OnInit {
         })
       })
       this.statusDesc = !this.statusDesc
-      this.titleDesc = false;
-      this.priorityDesc = false;
-      this.reporterDesc = false;
-      this.createdAtDesc = false;
+      this.titleDesc = true;
+      this.priorityDesc = true;
+      this.reporterDesc = true;
+      this.createdAtDesc = true;
     }
   }
 }

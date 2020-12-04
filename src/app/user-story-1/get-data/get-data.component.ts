@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Bugs } from '../bugs'
-import { Ust1Service } from '../ust1.service';
+import { Bugs } from '../../interfaces/bugs'
+import { Ust1Service } from '../../services/ust1.service';
+import { faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
+import { faSortNumericDown } from '@fortawesome/free-solid-svg-icons';
+import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
+import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
+import { faSort } from '@fortawesome/free-solid-svg-icons';
+import { GetSortedDataService } from 'src/app/services/get-sorted-data.service';
+
 
 @Component({
   selector: 'codehub-get-data',
@@ -9,14 +16,23 @@ import { Ust1Service } from '../ust1.service';
 })
 export class GetDataComponent implements OnInit {
 
-  constructor(private ust1: Ust1Service) { }
+  // Font Awesome Icons
+  sortAlphabeticalDownIcon = faSortAlphaDown;
+  sortNumberDownIcon = faSortNumericDown;
+  sortAlphabeticalUpIcon = faSortAlphaUp;
+  sortNumberUpIcon = faSortNumericUp;
+  sortDateIcon = faSort;
 
+  // if counter[i] == 0 the icon that shows the 
+  // sort direction(asc,desc) is not displayed  
+  counters: number[] = [0, 0, 0, 0, 0];  
   bugs: Bugs[] = [];
-  titleDesc: boolean = false;
-  priorityDesc: boolean = false;
-  reporterDesc: boolean = false;
-  createdAtDesc: boolean = false;
-  statusDesc: boolean = false;
+  // sortDesc[i] is true when the i-th header is sorted descendingly
+  // [0:title, 1:priority, 2:reporter, 3:createdAt, 4:status]
+  sortDesc: boolean[]= [false,false,false,false,false];
+  constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService) { }
+
+
 
 
   ngOnInit(): void {
@@ -26,8 +42,9 @@ export class GetDataComponent implements OnInit {
       })
     })
 
+    // console.log(this.bugs);
 
-//Second way to get bugs from API
+    //Second way to get bugs from API
     // this.ust1.getBugs().subscribe((data) => {
     //   this.bugs = data.map(it => {
     //     return {
@@ -45,7 +62,7 @@ export class GetDataComponent implements OnInit {
     // })
   }
 
-  getHeader(event: Event): void { 
+  getHeader(event: Event): void {
     // We get table header id(e.g. "title") from html 
     let value: string = (event.target as Element).id;
 
@@ -56,65 +73,53 @@ export class GetDataComponent implements OnInit {
     // of the other tabs are changed back to ascending.
 
     if (value == 'title') {
+      this.counters = [1, 0, 0, 0, 0];
       this.bugs = [];
-      this.ust1.getSortedBugs(value, this.titleDesc).subscribe((data) => {
+      this.getSortedService.getSortedBugs(value, this.sortDesc[0]).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
       })
-      this.titleDesc = !this.titleDesc
-      this.priorityDesc = false;
-      this.reporterDesc = false;
-      this.createdAtDesc = false;
-      this.statusDesc= false;
-    }else if (value == 'priority') {
+      this.sortDesc = [!this.sortDesc[0],false,false,false,false];
+    } else if (value == 'priority') {
+      this.counters = [0, 1, 0, 0, 0];
       this.bugs = [];
-      this.ust1.getSortedBugs(value, this.priorityDesc).subscribe((data) => {
+      this.getSortedService.getSortedBugs(value, this.sortDesc[1]).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
       })
-      this.priorityDesc = !this.priorityDesc
-      this.titleDesc = false;
-      this.reporterDesc = false;
-      this.createdAtDesc = false;
-      this.statusDesc= false;
-    }else if (value == 'reporter') {
+      this.sortDesc = [false,!this.sortDesc[1],false,false,false];
+
+    } else if (value == 'reporter') {
+      this.counters = [0, 0, 1, 0, 0];
       this.bugs = [];
-      this.ust1.getSortedBugs(value, this.reporterDesc).subscribe((data) => {
+      this.getSortedService.getSortedBugs(value, this.sortDesc[2]).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
       })
-      this.reporterDesc = !this.reporterDesc
-      this.titleDesc = false;
-      this.priorityDesc = false;
-      this.createdAtDesc = false;
-      this.statusDesc= false;
-    }else if (value == 'createdAt') {
+      this.sortDesc = [false,false,!this.sortDesc[2],false,false];
+
+    } else if (value == 'createdAt') {
+      this.counters = [0, 0, 0, 1, 0];
       this.bugs = [];
-      this.ust1.getSortedBugs(value, this.createdAtDesc).subscribe((data) => {
+      this.getSortedService.getSortedBugs(value, this.sortDesc[3]).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
       })
-      this.createdAtDesc = !this.createdAtDesc
-      this.titleDesc = false;
-      this.priorityDesc = false;
-      this.reporterDesc = false;
-      this.statusDesc= false;
-    }else if (value == 'status') {
+      this.sortDesc = [false,false,false,!this.sortDesc[3],false];
+
+    } else if (value == 'status') {
+      this.counters = [0, 0, 0, 0, 1];
       this.bugs = [];
-      this.ust1.getSortedBugs(value, this.statusDesc).subscribe((data) => {
+      this.getSortedService.getSortedBugs(value, this.sortDesc[4]).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
       })
-      this.statusDesc = !this.statusDesc
-      this.titleDesc = false;
-      this.priorityDesc = false;
-      this.reporterDesc = false;
-      this.createdAtDesc = false;
+      this.sortDesc = [false,false,false,false,!this.sortDesc[4]];
     }
   }
 }

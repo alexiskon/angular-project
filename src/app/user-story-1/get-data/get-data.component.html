@@ -1,21 +1,35 @@
 <table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th id="title" scope="col" (click)="getHeader($event)">Title</th>
-        <th id="priority" scope="col" (click)="getHeader($event)">Priority</th>
-        <th id="reporter" scope="col" (click)="getHeader($event)">Reporter</th>
-        <th id="createdAt" scope="col" (click)="getHeader($event)">Date Created</th>
-        <th id="status" scope="col" (click)="getHeader($event)">Status</th>
-      </tr>
-    </thead>
+  <thead class="thead-dark">
+    <tr class="header-row">
+      <th id="title" scope="col" (click)="getHeader($event)">
+        Title <fa-icon *ngIf="sortDesc[0] && counters[0]>0" [icon]="sortAlphabeticalDownIcon"></fa-icon>
+        <fa-icon *ngIf="!sortDesc[0] && counters[0]>0" [icon]="sortAlphabeticalUpIcon"></fa-icon>
+      </th>
+      <th id="priority" scope="col" (click)="getHeader($event)">
+        Priority <fa-icon *ngIf="sortDesc[1] && counters[1]>0" [icon]="sortNumberDownIcon"></fa-icon>
+        <fa-icon *ngIf="!sortDesc[1] && counters[1]>0" [icon]="sortNumberUpIcon"></fa-icon>
+      </th>
+      <th id="reporter" scope="col" (click)="getHeader($event)">
+        Reporter <fa-icon *ngIf="sortDesc[2] && counters[2]>0" [icon]="sortAlphabeticalDownIcon"></fa-icon>
+        <fa-icon *ngIf="!sortDesc[2] && counters[2]>0" [icon]="sortAlphabeticalUpIcon"></fa-icon>
+      </th>
+      <th id="createdAt" scope="col" (click)="getHeader($event)">
+        Date Created <fa-icon *ngIf="counters[3]>0" [icon]="sortDateIcon"></fa-icon>
+      </th>
+      <th id="status" scope="col" (click)="getHeader($event)">
+        Status <fa-icon *ngIf="sortDesc[4] && counters[4]>0" [icon]="sortAlphabeticalDownIcon"></fa-icon>
+        <fa-icon *ngIf="!sortDesc[4] && counters[4]>0" [icon]="sortAlphabeticalUpIcon"></fa-icon>
+      </th>
+    </tr>
+  </thead>
 
-    <tbody>
-      <tr *ngFor="let item of bugs">
-        <td>{{ item.title }}</td>
-        <td>{{ item.priority }}</td>
-        <td>{{ item.reporter }}</td>
-        <td>{{ item.createdAt }}</td>
-        <td>{{ item.status }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <tbody>
+    <tr *ngFor="let item of bugs">
+      <td>{{ item.title }}</td>
+      <td>{{ item.priority }}</td>
+      <td>{{ item.reporter }}</td>
+      <td>{{ item.createdAt }}</td>
+      <td>{{ item.status }}</td>
+    </tr>
+  </tbody>
+</table>

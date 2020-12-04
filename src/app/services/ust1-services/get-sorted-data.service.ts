@@ -12,7 +12,7 @@ export class GetSortedDataService {
   url = 'https://bug-report-system-server.herokuapp.com/bugs'
 
   getSortedBugs (header: string, desc: boolean): Observable<Bugs[]> {
-    let sortOrder = desc  ? 'asc': 'desc'; 
+    let sortOrder = desc  ? 'desc': 'asc'; 
     let sortedUrl = this.url + '?sort=' + header + ',' + sortOrder;
     return this.http.get<Bugs[]>(sortedUrl)
   }

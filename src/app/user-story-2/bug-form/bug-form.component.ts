@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { Bugs } from 'src/app/interfaces/bugs';
 import { PostBugService } from 'src/app/services/ust2-services/post-bug.service';
 
@@ -12,6 +13,7 @@ import { PostBugService } from 'src/app/services/ust2-services/post-bug.service'
 export class BugFormComponent implements OnInit {
   bugForm!: FormGroup;
   submitted: boolean = false;
+  btnArrow = faArrowAltCircleRight;
 
   constructor(private fb: FormBuilder, private postService: PostBugService, private router: Router) { }
 
@@ -44,10 +46,8 @@ export class BugFormComponent implements OnInit {
       return;
     } else {
       let bugCreated: Bugs = this.bugForm.value
-      let bugCreatedId: string;
       this.postService.postBugs(bugCreated).subscribe(value => {
-        bugCreatedId = value.id;
-        this.router.navigate([''], { queryParams: { id: bugCreatedId } });
+        this.router.navigate([''], { queryParams: { id: value.id } });
       });
     }
   }

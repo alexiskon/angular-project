@@ -1,4 +1,35 @@
-.invalid{
-    color:red;
-    font-weight: 10px
+.invalid {
+    color: red;
+    font-weight: 10px;
+    margin-left: 3px;
+}
+.bugForm {
+    border: 1px solid black;
+    padding: 15px;
+    background-color: rgb(227, 246, 252);
+    border-radius: 10px;
+}
+
+.submit-btn {
+    width: 250px;
+    height: 45px;
+    border: none;
+    outline: none;
+    box-shadow: -4px 4px 5px 0 #feb361;
+    color: #fff;
+    font-size: 14px;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.4);
+    background-color: #fe9a2e;
+    border-radius: 3px;
+    font-weight: 700;
+}
+.submit-btn:hover {
+    background-color: #ff8000;
+    cursor: pointer;
+}
+.submit-btn:active {
+    margin-left: -4px;
+    padding-bottom: -4px;
+    padding-top: 2px;
+    box-shadow: none;
 }

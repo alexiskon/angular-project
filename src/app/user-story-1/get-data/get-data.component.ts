@@ -7,7 +7,7 @@ import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
 import { faSort } from '@fortawesome/free-solid-svg-icons';
 import { GetSortedDataService } from 'src/app/services/ust1-services/get-sorted-data.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.service';
 
 
@@ -29,45 +29,49 @@ export class GetDataComponent implements OnInit {
   // sort direction(asc,desc) is not displayed  
   counters: number[] = [0, 0, 0, 0, 0];
   bugs: Bugs[] = [];
-  cameFromForm: boolean= false;
-  newBug!:Bugs;
+  cameFromForm: boolean = false;
+  newBug!: Bugs;
   // sortDesc[i] is true when the i-th header is sorted descendingly
   // [0:title, 1:priority, 2:reporter, 3:createdAt, 4:status]
   sortDesc: boolean[] = [false, true, false, true, false];
-  constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService, 
-    private route: ActivatedRoute, private getBugById: GetBugByIdService) { }
-
-
-
+  constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService,
+    private route: ActivatedRoute, private getBugById: GetBugByIdService, private router: Router) { }
 
   ngOnInit(): void {
     let temp: string = "";
     // If queryParams contain an id then first display in the table 
     //the bug with this id, else render the default table
-    if(!(this.route.snapshot.queryParamMap.get('id') == null)) {
+    if (!(this.route.snapshot.queryParamMap.get('id') == null)) {
       this.cameFromForm = true;
       this.route.queryParams.subscribe(p => {
         temp = p.id;
       })
     }
-    if(this.cameFromForm){
-      this.getBugById.getBugById(temp).subscribe(data =>
-        {
-          this.bugs.push(data)
-        })
+    if (this.cameFromForm) {
+      this.getBugById.getBugById(temp).subscribe(data => {
+        this.bugs.push(data)
+      })
     }
     this.ust1.getBugs().subscribe((data) => {
       data.map((it) => {
-        if(it.id===temp) return;
+        if (it.id === temp) return;
         this.bugs.push(it)
       })
     })
   }
 
+  clearParams() {
+    this.router.navigate(
+      ['.'],
+      { relativeTo: this.route }
+    );
+  }
+
   getHeader(event: Event): void {
     // We get table header id(e.g. "title") from html 
     let value: string = (event.target as Element).id;
-
+    this.cameFromForm = false;
+    this.clearParams();
     // According to the id we send a request to the API and we get the sorted
     // data from url?sort=${id},${order} where order is by default ascending
     // for alphabetical values, descending for priority to show the most 
@@ -77,53 +81,42 @@ export class GetDataComponent implements OnInit {
     // of the other tabs are changed back to ascending.
 
     if (value == 'title') {
-      this.counters = [1, 0, 0, 0, 0];
-      this.bugs = [];
-      this.getSortedService.getSortedBugs(value, this.sortDesc[0]).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-      this.sortDesc = [!this.sortDesc[0], true, false, true, false];
-    } else if (value == 'priority') {
-      this.counters = [0, 1, 0, 0, 0];
-      this.bugs = [];
-      this.getSortedService.getSortedBugs(value, this.sortDesc[1]).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-      this.sortDesc = [false, !this.sortDesc[1], false, true, false];
+      this.headerHandle(value, 0)
+    }
+    else if (value == 'priority') {
+      this.headerHandle(value, 1)
+    }
+    else if (value == 'reporter') {
+      this.headerHandle(value, 2)
+    }
+    else if (value == 'createdAt') {
+      this.headerHandle(value, 3)
+    }
+    else if (value == 'status') {
+      this.headerHandle(value, 4)
+    }
+  }
 
-    } else if (value == 'reporter') {
-      this.counters = [0, 0, 1, 0, 0];
-      this.bugs = [];
-      this.getSortedService.getSortedBugs(value, this.sortDesc[2]).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
+  headerHandle(value: string, index: number) {
+    this.bugs = [];
+    this.getSortedService.getSortedBugs(value, this.sortDesc[index]).subscribe((data) => {
+      data.map((it) => {
+        this.bugs.push(it)
       })
-      this.sortDesc = [false, true, !this.sortDesc[2], true, false];
-
-    } else if (value == 'createdAt') {
-      this.counters = [0, 0, 0, 1, 0];
-      this.bugs = [];
-      this.getSortedService.getSortedBugs(value, this.sortDesc[3]).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-      this.sortDesc = [false, true, false, !this.sortDesc[3], false];
-
-    } else if (value == 'status') {
-      this.counters = [0, 0, 0, 0, 1];
-      this.bugs = [];
-      this.getSortedService.getSortedBugs(value, this.sortDesc[4]).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-      this.sortDesc = [false, true, false, true, !this.sortDesc[4]];
+    })
+    for (let i = 0; i < this.counters.length; i++) {
+      if (i == index) {
+        this.counters[i] = 1;
+        this.sortDesc[i] = !this.sortDesc[index]
+      }
+      else if (i % 2 == 0) {
+        this.counters[i] = 0;
+        this.sortDesc[i] = false;
+      }
+      else {
+        this.counters[i] = 0;
+        this.sortDesc[i] = true;
+      }
     }
   }
 }

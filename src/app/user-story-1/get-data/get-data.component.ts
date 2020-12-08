@@ -42,10 +42,9 @@ export class GetDataComponent implements OnInit {
 
   ngOnInit(): void {
     let temp: string = "";
-    if (this.route.snapshot.queryParamMap.params.id == undefined) {
-      console.log("No query parameters")
-    }
-    else {
+    // If queryParams contain an id then first display in the table 
+    //the bug with this id, else render the default table
+    if(!(this.route.snapshot.queryParamMap.get('id') == null)) {
       this.cameFromForm = true;
       this.route.queryParams.subscribe(p => {
         temp = p.id;

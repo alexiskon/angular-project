@@ -9,7 +9,8 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     FontAwesomeModule,
-    RouterModule
+    RouterModule,
+    
   ],
   exports: [GetDataComponent]
 })

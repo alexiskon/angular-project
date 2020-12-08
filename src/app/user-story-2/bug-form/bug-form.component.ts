@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { from } from 'rxjs';
+import { AppRoutingModule } from 'src/app/app-routing.module';
 import { Bugs } from 'src/app/interfaces/bugs';
 import { PostBugService } from 'src/app/services/ust2-services/post-bug.service';
 
@@ -10,10 +13,9 @@ import { PostBugService } from 'src/app/services/ust2-services/post-bug.service'
 })
 export class BugFormComponent implements OnInit {
   bugForm: FormGroup;
-  submitted:boolean = false;
-  bugCreated:Bugs;
+  submitted: boolean = false;
 
-  constructor(private fb: FormBuilder,private postService: PostBugService) { }
+  constructor(private fb: FormBuilder, private postService: PostBugService, private router: Router) { }
 
 
   ngOnInit(): void {
@@ -25,9 +27,9 @@ export class BugFormComponent implements OnInit {
       status: []
     });
 
-    this.bugForm.get('reporter').valueChanges.subscribe
+    this.bugForm.controls.reporter.valueChanges.subscribe
       (value => {
-        const statusFormControl = this.bugForm.get('status');
+        const statusFormControl = this.bugForm.controls.status;
 
         if (value === 'QA') {
           statusFormControl.setValidators(Validators.required);
@@ -40,20 +42,25 @@ export class BugFormComponent implements OnInit {
   }
 
 
-  
 
-submitForm(){
-  if (this.bugForm.invalid) {
-    this.submitted = true;
-    return;
+
+  submitForm() {
+    if (this.bugForm.invalid) {
+      this.submitted = true;
+      return;
+    } else {
+      let bugCreated: Bugs = this.bugForm.value
+      let bugCreatedId: string;
+      this.postService.postBugs(bugCreated).subscribe(value => {
+        console.log(value.id);
+        bugCreatedId = value.id;
+      });
+
+      // this.router.navigate([""]);
+    }
+
+
+
   }
-
-  this.bugCreated.title = this.bugForm.controls.title.value;
-  this.bugCreated.description = this.bugForm.controls.description.value;
-  this.bugCreated.priority = this.bugForm.controls.priority.value;
-  this.bugCreated.reporter = this.bugForm.controls.reporter.value;
-  this.bugCreated.status = this.bugForm.controls.status.value;
-  this.postService.postBugs(this.bugCreated);
-}
 
 }

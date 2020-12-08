@@ -81,19 +81,19 @@ export class GetDataComponent implements OnInit {
     // of the other tabs are changed back to ascending.
 
     if (value == 'title') {
-      this.headerHandle(value, 0)
+      this.headerHandle(value, 0);
     }
     else if (value == 'priority') {
-      this.headerHandle(value, 1)
+      this.headerHandle(value, 1);
     }
     else if (value == 'reporter') {
-      this.headerHandle(value, 2)
+      this.headerHandle(value, 2);
     }
     else if (value == 'createdAt') {
-      this.headerHandle(value, 3)
+      this.headerHandle(value, 3);
     }
     else if (value == 'status') {
-      this.headerHandle(value, 4)
+      this.headerHandle(value, 4);
     }
   }
 
@@ -107,7 +107,7 @@ export class GetDataComponent implements OnInit {
     for (let i = 0; i < this.counters.length; i++) {
       if (i == index) {
         this.counters[i] = 1;
-        this.sortDesc[i] = !this.sortDesc[index]
+        this.sortDesc[i] = !this.sortDesc[index];
       }
       else if (i % 2 == 0) {
         this.counters[i] = 0;

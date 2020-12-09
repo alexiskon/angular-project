@@ -47,6 +47,7 @@ export class GetDataComponent implements OnInit {
         temp = p.id;
       })
     }
+    this.clearParams();
     if (this.cameFromForm) {
       this.getBugById.getBugById(temp).subscribe(data => {
         this.bugs.push(data)

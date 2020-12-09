@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Bugs } from '../../interfaces/bugs'
 import { Ust1Service } from '../../services/ust1-services/ust1.service';
-import { faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
-import { faSort } from '@fortawesome/free-solid-svg-icons';
+import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight, faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
 import { GetSortedDataService } from 'src/app/services/ust1-services/get-sorted-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.service';
+import { DeleteBugService } from 'src/app/services/ust2-services/delete-bug.service';
 
 
 @Component({
@@ -24,6 +24,9 @@ export class GetDataComponent implements OnInit {
   sortAlphabeticalUpIcon = faSortAlphaUp;
   sortNumberUpIcon = faSortNumericUp;
   sortDateIcon = faSort;
+  pageBtnRight = faArrowAltCircleRight;
+  pagebtnLeft = faArrowAltCircleLeft;
+
 
   // if counter[i] == 0 the icon that shows the 
   // sort direction(asc,desc) is not displayed  
@@ -32,14 +35,14 @@ export class GetDataComponent implements OnInit {
   // sortDesc[i] is true when the i-th header is sorted descendingly
   // [0:title, 1:priority, 2:reporter, 3:createdAt, 4:status]
   sortDesc: boolean[] = [false, true, false, true, false];
-
+  pageNumber: number = 1;
 
   cameFromForm: boolean = false;
   temp: string = "";
 
   constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService,
     private route: ActivatedRoute, private getBugById: GetBugByIdService,
-    private router: Router) { }
+    private router: Router, private delBug: DeleteBugService) { }
 
     ngOnInit(): void {
 
@@ -133,9 +136,24 @@ export class GetDataComponent implements OnInit {
       this.sortDesc = [false, true, false, true, !this.sortDesc[4]];
     }
   }
-
+  //pass data to the route-needs to ActivatedRoute to the navigated path and this.route.snapshot.queryParamMap.get('id') to get the id
   editBug(item: Bugs) {
     this.router.navigate(["bug_reporting_form"], {queryParams: {id: item.id}})
+  }
+
+  deleteBug (item: Bugs) {
+    this.bugs = []
+    this.delBug.deleteBugs(item.id).subscribe()
+    this.counters = [0, 0, 0, 0, 0];
+    this.sortDesc = [false, true, false, true, false];
+    this.ust1.getBugs().subscribe((data) => {
+      data.map((it) => {
+        if (item.id === it.id) {
+          return;
+        }
+        this.bugs.push(it)
+      })
+    })
   }
 
 }

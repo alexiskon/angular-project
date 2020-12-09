@@ -1,6 +1,6 @@
-<button class="btn btn-primary" [routerLink]="['bug_reporting_form']">Create New</button>
+<button class="btn btn-dark" [routerLink]="['bug_reporting_form']">Create New</button>
 
-<table class="table">
+<table class="table table-hover">
   <thead class="thead-dark">
     <tr class="header-row">
       <th id="title" scope="col" (click)="getHeader($event)">
@@ -23,6 +23,8 @@
         <fa-icon *ngIf="!sortDesc[4] && counters[4]>0" [icon]="sortAlphabeticalUpIcon"></fa-icon>
       </th>
       <th></th>
+      <th></th>
+
     </tr>
   </thead>
 
@@ -34,6 +36,15 @@
       <td>{{ item.createdAt }}</td>
       <td>{{ item.status }}</td>
       <td><button class="btn btn-dark" type="submit" (click)="editBug(item)">Edit</button></td>
+      <td><button class="btn btn-dark" style="background-color: red;" type="submit" (click)="deleteBug(item)">Delete</button></td>
     </tr>
   </tbody>
 </table>
+
+<div class="text-center" >
+  <fa-icon [icon]="pagebtnLeft" class="page-btn" (click)="prev10()"></fa-icon>
+
+
+  <fa-icon [icon]="pageBtnRight" class="page-btn" (click)="next10()"></fa-icon>
+
+</div>

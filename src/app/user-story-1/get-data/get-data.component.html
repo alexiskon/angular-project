@@ -21,6 +21,7 @@
         Status <fa-icon *ngIf="sortDesc[4] && counters[4]>0" [icon]="sortAlphabeticalDownIcon"></fa-icon>
         <fa-icon *ngIf="!sortDesc[4] && counters[4]>0" [icon]="sortAlphabeticalUpIcon"></fa-icon>
       </th>
+      <th></th>
     </tr>
   </thead>
 
@@ -31,6 +32,7 @@
       <td>{{ item.reporter }}</td>
       <td>{{ item.createdAt }}</td>
       <td>{{ item.status }}</td>
+      <td><button class="btn-dark btn" (click)="editClicked(item)" >Edit</button></td>
     </tr>
   </tbody>
 </table>

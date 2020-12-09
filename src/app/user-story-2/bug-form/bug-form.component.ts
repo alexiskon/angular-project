@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { Bugs } from 'src/app/interfaces/bugs';
+import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.service';
 import { PostBugService } from 'src/app/services/ust2-services/post-bug.service';
 
 @Component({
@@ -15,9 +16,12 @@ export class BugFormComponent implements OnInit {
   submitted: boolean = false;
   btnArrow = faArrowAltCircleRight;
 
-  constructor(private fb: FormBuilder, private postService: PostBugService, private router: Router) { }
+  constructor(private fb: FormBuilder, private postService: PostBugService, private router: Router,
+    private route: ActivatedRoute, private getBugById: GetBugByIdService) { }
 
   ngOnInit(): void {
+    let temp: string = "";
+    let editClicked: boolean = false
     this.bugForm = this.fb.group({
       title: [null, Validators.required],
       description: [null, Validators.required],
@@ -25,6 +29,25 @@ export class BugFormComponent implements OnInit {
       reporter: [null, Validators.required],
       status: []
     });
+    if (!(this.route.snapshot.queryParamMap.get('id') == null)) {
+      editClicked = true;
+      this.route.queryParams.subscribe(p => {
+        temp = p.id;
+      })
+    }
+    if (editClicked) {
+      this.getBugById.getBugById(temp).subscribe(it => {
+        this.bugForm = this.fb.group({
+          title: [it.title, Validators.required],
+          description: [it.description, Validators.required],
+          priority: [it.priority, Validators.required],
+          reporter: [it.reporter, Validators.required],
+          status: [it.status]
+        });
+        console.log(it.priority)
+      })
+    }
+    // else{}
 
     this.bugForm.controls.reporter.valueChanges.subscribe
       (value => {

@@ -119,4 +119,8 @@ export class GetDataComponent implements OnInit {
       }
     }
   }
+
+  editClicked(bug: Bugs) {
+    this.router.navigate(['bug_reporting_form'], { queryParams: { id: bug.id } });
+  }
 }

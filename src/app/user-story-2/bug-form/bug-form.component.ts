@@ -40,7 +40,7 @@ export class BugFormComponent implements OnInit {
         this.bugForm = this.fb.group({
           title: [it.title, Validators.required],
           description: [it.description, Validators.required],
-          priority: [it.priority, Validators.required],
+          priority: [it.priority.toString(), Validators.required],
           reporter: [it.reporter, Validators.required],
           status: [it.status]
         });

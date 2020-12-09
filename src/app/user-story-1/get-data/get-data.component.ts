@@ -7,6 +7,8 @@ import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
 import { faSort } from '@fortawesome/free-solid-svg-icons';
 import { GetSortedDataService } from 'src/app/services/ust1-services/get-sorted-data.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.service';
 
 
 @Component({
@@ -25,23 +27,49 @@ export class GetDataComponent implements OnInit {
 
   // if counter[i] == 0 the icon that shows the 
   // sort direction(asc,desc) is not displayed  
-  counters: number[] = [0, 0, 0, 0, 0];  
+  counters: number[] = [0, 0, 0, 0, 0];
   bugs: Bugs[] = [];
   // sortDesc[i] is true when the i-th header is sorted descendingly
   // [0:title, 1:priority, 2:reporter, 3:createdAt, 4:status]
-  sortDesc: boolean[]= [false,true,false,true,false];
-  constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService) { }
+  sortDesc: boolean[] = [false, true, false, true, false];
 
 
+  cameFromForm: boolean = false;
+  temp: string = "";
 
+  constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService,
+    private route: ActivatedRoute, private getBugById: GetBugByIdService,
+    private router: Router) { }
 
-  ngOnInit(): void {
+    ngOnInit(): void {
+
+      if(!(this.route.snapshot.queryParamMap.get('id') === null)) {
+      this.cameFromForm = true;
+      this.route.queryParams.subscribe(value => {
+        this.temp = value.id;
+      })
+    }
+
+    if (this.cameFromForm) {
+      this.clearParams();
+      this.getBugById.getBugById(this.temp).subscribe(data => {
+        this.bugs.push(data);
+      })
+    }
+
     this.ust1.getBugs().subscribe((data) => {
       data.map((it) => {
         this.bugs.push(it)
       })
     })
   }
+
+  clearParams() {
+    this.router.navigate(
+      ['.'],
+      { relativeTo: this.route }
+    )
+    }
 
   getHeader(event: Event): void {
     // We get table header id(e.g. "title") from html 
@@ -63,7 +91,7 @@ export class GetDataComponent implements OnInit {
           this.bugs.push(it)
         })
       })
-      this.sortDesc = [!this.sortDesc[0],true,false,true,false];
+      this.sortDesc = [!this.sortDesc[0], true, false, true, false];
     } else if (value == 'priority') {
       this.counters = [0, 1, 0, 0, 0];
       this.bugs = [];
@@ -72,7 +100,7 @@ export class GetDataComponent implements OnInit {
           this.bugs.push(it)
         })
       })
-      this.sortDesc = [false,!this.sortDesc[1],false,true,false];
+      this.sortDesc = [false, !this.sortDesc[1], false, true, false];
 
     } else if (value == 'reporter') {
       this.counters = [0, 0, 1, 0, 0];
@@ -82,7 +110,7 @@ export class GetDataComponent implements OnInit {
           this.bugs.push(it)
         })
       })
-      this.sortDesc = [false,true,!this.sortDesc[2],true,false];
+      this.sortDesc = [false, true, !this.sortDesc[2], true, false];
 
     } else if (value == 'createdAt') {
       this.counters = [0, 0, 0, 1, 0];
@@ -92,7 +120,7 @@ export class GetDataComponent implements OnInit {
           this.bugs.push(it)
         })
       })
-      this.sortDesc = [false,true,false,!this.sortDesc[3],false];
+      this.sortDesc = [false, true, false, !this.sortDesc[3], false];
 
     } else if (value == 'status') {
       this.counters = [0, 0, 0, 0, 1];
@@ -102,7 +130,12 @@ export class GetDataComponent implements OnInit {
           this.bugs.push(it)
         })
       })
-      this.sortDesc = [false,true,false,true,!this.sortDesc[4]];
+      this.sortDesc = [false, true, false, true, !this.sortDesc[4]];
     }
   }
+
+  editBug(item: Bugs) {
+    this.router.navigate(["bug_reporting_form"], {queryParams: {id: item.id}})
+  }
+
 }

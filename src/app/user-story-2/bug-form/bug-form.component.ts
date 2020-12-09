@@ -5,6 +5,7 @@ import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { Bugs } from 'src/app/interfaces/bugs';
 import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.service';
 import { PostBugService } from 'src/app/services/ust2-services/post-bug.service';
+import { PutBugService } from 'src/app/services/ust2-services/put-bug.service';
 
 @Component({
   selector: 'codehub-bug-form',
@@ -14,14 +15,16 @@ import { PostBugService } from 'src/app/services/ust2-services/post-bug.service'
 export class BugFormComponent implements OnInit {
   bugForm!: FormGroup;
   submitted: boolean = false;
+  editClicked: boolean = false;
+  temp: string = "";
+
+
   btnArrow = faArrowAltCircleRight;
 
   constructor(private fb: FormBuilder, private postService: PostBugService, private router: Router,
-    private route: ActivatedRoute, private getBugById: GetBugByIdService) { }
+    private route: ActivatedRoute, private getBugById: GetBugByIdService, private putBugService: PutBugService) { }
 
   ngOnInit(): void {
-    let temp: string = "";
-    let editClicked: boolean = false
     this.bugForm = this.fb.group({
       title: [null, Validators.required],
       description: [null, Validators.required],
@@ -30,13 +33,13 @@ export class BugFormComponent implements OnInit {
       status: []
     });
     if (!(this.route.snapshot.queryParamMap.get('id') == null)) {
-      editClicked = true;
+      this.editClicked = true;
       this.route.queryParams.subscribe(p => {
-        temp = p.id;
+        this.temp = p.id;
       })
     }
-    if (editClicked) {
-      this.getBugById.getBugById(temp).subscribe(it => {
+    if (this.editClicked) {
+      this.getBugById.getBugById(this.temp).subscribe(it => {
         this.bugForm = this.fb.group({
           title: [it.title, Validators.required],
           description: [it.description, Validators.required],
@@ -44,7 +47,6 @@ export class BugFormComponent implements OnInit {
           reporter: [it.reporter, Validators.required],
           status: [it.status]
         });
-        console.log(it.priority)
       })
     }
     // else{}
@@ -68,10 +70,19 @@ export class BugFormComponent implements OnInit {
       this.submitted = true;
       return;
     } else {
-      let bugCreated: Bugs = this.bugForm.value
-      this.postService.postBugs(bugCreated).subscribe(value => {
-        this.router.navigate([''], { queryParams: { id: value.id } });
-      });
+      if (!this.editClicked) {
+        let bugCreated: Bugs = this.bugForm.value
+        this.postService.postBugs(bugCreated).subscribe(value => {
+          this.router.navigate([''], { queryParams: { id: value.id } });
+        });
+      }
+      else{
+        let bugCreated: Bugs = this.bugForm.value
+        this.putBugService.putBugs(this.temp, bugCreated).subscribe(value => {
+          this.router.navigate([''], { queryParams: { id: value.id } });
+        });
+      }
     }
+
   }
 }

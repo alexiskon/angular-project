@@ -48,15 +48,16 @@ export class GetDataComponent implements OnInit {
       })
     }
     if (this.cameFromForm) {
-      this.clearParams();
       this.getBugById.getBugById(temp).subscribe(data => {
         this.bugs.push(data)
       })
     }
     this.ust1.getBugs().subscribe((data) => {
       data.map((it) => {
-        if (it.id === temp) return;
-        this.bugs.push(it)
+        if (it.id === temp) {
+          console.log(it.id, temp, it.id===temp)
+        }
+        else this.bugs.push(it)
       })
     })
   }
@@ -72,6 +73,7 @@ export class GetDataComponent implements OnInit {
     // We get table header id(e.g. "title") from html 
     let value: string = (event.target as Element).id;
     this.cameFromForm = false;
+    this.clearParams();
     // According to the id we send a request to the API and we get the sorted
     // data from url?sort=${id},${order} where order is by default ascending
     // for alphabetical values, descending for priority to show the most 

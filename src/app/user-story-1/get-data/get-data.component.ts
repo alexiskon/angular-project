@@ -175,12 +175,12 @@ export class GetDataComponent implements OnInit {
         })
       } else {
         //find the sortDesc boolean variable
-        for (let i = 0; i <= this.counters.length; i++) {
+        for (let i = 0; i < this.counters.length; i++) {
           if (this.counters[i] != 0) {
             this.sortDescIndex = i;
           }
         }
-        this.getSortedService.getSortedBugs(this.value, this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
+        this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
           data.map((it) => {
             this.bugs.push(it)
           })
@@ -203,12 +203,12 @@ export class GetDataComponent implements OnInit {
         })
       } else {
         //find the sortDesc boolean variable
-        for (let i = 0; i <= this.counters.length; i++) {
+        for (let i = 0; i < this.counters.length; i++) {
           if (this.counters[i] != 0) {
             this.sortDescIndex = i;
           }
         }
-        this.getSortedService.getSortedBugs(this.value, this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
+        this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
           data.map((it) => {
             this.bugs.push(it)
           })

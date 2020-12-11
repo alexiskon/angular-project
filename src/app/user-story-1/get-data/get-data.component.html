@@ -33,7 +33,7 @@
       <td>{{ item.title }}</td>
       <td>{{ item.priority }}</td>
       <td>{{ item.reporter }}</td>
-      <td>{{ item.createdAt }}</td>
+      <td>{{ item.createdAt | date: "dd/MM/yyyy hh:mm:ss" }}</td>
       <td>{{ item.status }}</td>
       <td><button class="btn btn-dark" type="submit" (click)="editBug(item)">Edit</button></td>
       <td><button class="btn btn-dark" style="background-color: red;" type="submit" (click)="deleteBug(item)">Delete</button></td>
@@ -42,7 +42,7 @@
 </table>
 
 <div class="text-center" id="pagingBtns" >
-  <fa-icon [icon]="pagebtnLeft" class="page-btn" (click)="prevPage()"></fa-icon>
+  <fa-icon *ngIf="pageNumber>0" [icon]="pagebtnLeft" class="page-btn" (click)="prevPage()"></fa-icon>
 
 
   <fa-icon [icon]="pageBtnRight" class="page-btn" (click)="nextPage()"></fa-icon>

@@ -70,6 +70,7 @@ export class BugFormComponent implements OnInit {
     //fill form with the requested for edit data
     if (this.editButton) {
       this.getBugById.getBugById(this.temp).subscribe(data => {
+        commentValues = data.comments;
         this.bugForm = this.fb.group({ //get data with id from getBugId
           title: [data.title, Validators.required],
           description: [data.description, Validators.required],
@@ -78,9 +79,9 @@ export class BugFormComponent implements OnInit {
           status: [data.status],
           comments: this.fb.array([])
         })
-          commentValues.forEach(comment => {
-            this.comments.push(this.commentItem(comment.description, comment.reporter));
-          });
+        commentValues.forEach(comment => {
+          this.comments.push(this.commentItem(comment.description, comment.reporter));
+        });
       })
     }
     //if reporter is QA status is required
@@ -102,20 +103,26 @@ export class BugFormComponent implements OnInit {
     if (this.bugForm.invalid) {
       this.submitted = true;
       return;
-    } else if (this.editButton) {//submited form from edit button
+    } else {
       let bugCreated: Bugs = this.bugForm.value
-      this.updateBug.updateBugs(this.temp, bugCreated).subscribe(value => {
-        console.log(value.id);
-        this.router.navigate([""], { queryParams: { id: value.id } })
-      });
-    }
-    else {  //submit form for new entry
-      let bugCreated: Bugs = this.bugForm.value
-      this.postService.postBugs(bugCreated).subscribe(value => {
-        console.log(value.id);
-        this.router.navigate([""], { queryParams: { id: value.id } })
-      });
+      bugCreated.comments = this.comments.value.map((data: { reporter: any; description: any; }) => {
+        return {
+          reporter: data.reporter,
+          description: data.description
+        }
+      })
+      if (this.editButton) {//submited form from edit button
+        this.updateBug.updateBugs(this.temp, bugCreated).subscribe(value => {
+          console.log(value.id);
+          this.router.navigate([""], { queryParams: { id: value.id } })
+        });
+      }
+      else {  //submit form for new entry
+        this.postService.postBugs(bugCreated).subscribe(value => {
+          console.log(value.id);
+          this.router.navigate([""], { queryParams: { id: value.id } })
+        });
+      }
     }
   }
-
 }

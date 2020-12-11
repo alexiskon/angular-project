@@ -78,11 +78,9 @@ export class BugFormComponent implements OnInit {
           status: [data.status],
           comments: this.fb.array([])
         })
-        if (commentValues) {
           commentValues.forEach(comment => {
             this.comments.push(this.commentItem(comment.description, comment.reporter));
           });
-        }
       })
     }
     //if reporter is QA status is required

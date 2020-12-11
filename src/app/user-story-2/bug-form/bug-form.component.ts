@@ -34,8 +34,8 @@ export class BugFormComponent implements OnInit {
 
   private commentItem(desc?: string, name?: string) {
     return this.fb.group({
-      description: [desc],
-      reporter: [name]
+      description: [desc, Validators.required],
+      reporter: [name, Validators.required]
     })
   }
 

@@ -10,6 +10,7 @@ import { GetSortedDataService } from 'src/app/services/ust1-services/get-sorted-
 import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.service';
 import { DeleteBugService } from 'src/app/services/ust2-services/delete-bug.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -30,6 +31,12 @@ export class GetDataComponent implements OnInit {
 
   // if counter[i] == 0 the icon that shows the 
   // sort direction(asc,desc) is not displayed  
+  titleSearch: string = "";
+  prioritySearch: string = "";
+  dateSearch: string = "";
+  reporterSearch: string = "";
+  statusSearch: string = "";
+
   counters: number[] = [0, 0, 0, 0, 0];
   bugs: Bugs[] = [];
   cameFromForm: boolean = false;

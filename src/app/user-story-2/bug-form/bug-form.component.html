@@ -12,8 +12,8 @@
 
             <div class="form-group">
                 <label class="font-weight-bold">Description <span class="invalid"
-                        *ngIf="bugForm.controls.description.invalid">*</span></label> <input type="text"
-                    formControlName="description" class="form-control" aria-describedby="Description"
+                        *ngIf="bugForm.controls.description.invalid">*</span></label>
+                <input type="text" formControlName="description" class="form-control" aria-describedby="Description"
                     placeholder="Describe bug here">
             </div>
             <div class="invalid" *ngIf="bugForm.controls.description.invalid && submitted">This field is required</div>
@@ -66,12 +66,14 @@
                 </div>
             </div>
 
-            <span class="btn btn-primary mb-2 mt-n2" *ngIf="comments.length==0" (click)="addComment()">Add Comments</span>
+            <span class="btn btn-primary mb-2 mt-n2" *ngIf="comments.length==0" (click)="addComment()">Add
+                Comments</span>
 
             <div class="comment-style" *ngFor="let comment of comments.controls; let isLast=last; let idx=index;"
                 [formGroup]="comment">
                 <label class="font-weight-bold font-weight-bolder">Comment #{{idx+1}}</label>
-                <span class="delete-comment" (click)="removeComment(idx)" data-html="true" title="Delete comment">X</span>
+                <span class="delete-comment" (click)="removeComment(idx)" data-html="true"
+                    title="Delete comment">X</span>
                 <div class="form-group">
                     <label>Description</label>
                     <input type="text" formControlName="description" class="form-control"

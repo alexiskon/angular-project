@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Bugs } from '../../interfaces/bugs'
-import { Ust1Service } from '../../services/ust1-services/ust1.service';
+import { Ust1Service } from '../../services/ust1.service';
 import { faSortNumericDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
 import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight, faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
-import { GetSortedDataService } from 'src/app/services/ust1-services/get-sorted-data.service';
+import { GetSortedDataService } from 'src/app/services/get-sorted-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.service';
-import { DeleteBugService } from 'src/app/services/ust2-services/delete-bug.service';
+import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
+import { DeleteBugService } from 'src/app/services/delete-bug.service';
 
 
 @Component({
@@ -154,6 +154,12 @@ export class GetDataComponent implements OnInit {
         this.bugs.push(it)
       })
     })
+  }
+  prev10 () {
+
+  }
+  next10 () {
+    
   }
 
 }

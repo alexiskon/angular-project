@@ -1,19 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Bugs } from '../../interfaces/bugs'
+import { Bugs } from '../interfaces/bugs';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class Ust1Service {
+export class DeleteBugService {
 
   constructor(private http: HttpClient) { }
 
   url = 'https://bug-report-system-server.herokuapp.com/bugs'
-  getBugs (): Observable<Bugs[]> {
-    return this.http.get<Bugs[]>(this.url);
-    
+
+  deleteBugs (id: string): Observable<Bugs> {
+    return this.http.delete<Bugs>(`${this.url}/${id}`)
   }
 }

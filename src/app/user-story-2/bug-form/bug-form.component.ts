@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms"
 import { Bugs } from '../../interfaces/bugs'
-import { PostBugService } from '../../services/ust2-services/post-bug.service'
+import { PostBugService } from '../../services/post-bug.service'
 import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.service';
-import { UpdateBugService } from 'src/app/services/ust2-services/update-bug.service';
+import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
+import { UpdateBugService } from 'src/app/services/update-bug.service';
 
 @Component({
   selector: 'codehub-bug-form',

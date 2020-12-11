@@ -40,6 +40,10 @@ export class GetDataComponent implements OnInit {
   cameFromForm: boolean = false;
   temp: string = "";
 
+  //paging variables
+  pageNum: number = 1;
+  pageSize: number = 10;
+
   constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService,
     private route: ActivatedRoute, private getBugById: GetBugByIdService,
     private router: Router, private delBug: DeleteBugService) { }

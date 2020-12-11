@@ -12,8 +12,8 @@ export class Ust1Service {
   constructor(private http: HttpClient) { }
 
   url = 'https://bug-report-system-server.herokuapp.com/bugs'
-  getBugs (): Observable<Bugs[]> {
-    return this.http.get<Bugs[]>(this.url);
+  getBugs (pageNum: number, pagesize: number): Observable<Bugs[]> {
+    return this.http.get<Bugs[]>(this.url + '?page=' + pageNum + '&size=' + pagesize);
     
   }
 }

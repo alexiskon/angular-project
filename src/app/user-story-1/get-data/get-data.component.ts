@@ -32,25 +32,27 @@ export class GetDataComponent implements OnInit {
   // sort direction(asc,desc) is not displayed  
   counters: number[] = [0, 0, 0, 0, 0];
   bugs: Bugs[] = [];
+  value: string = "";
   // sortDesc[i] is true when the i-th header is sorted descendingly
   // [0:title, 1:priority, 2:reporter, 3:createdAt, 4:status]
   sortDesc: boolean[] = [false, true, false, true, false];
-  pageNumber: number = 1;
+  sortDescIndex: number = 0;//sorted paging help variable
+
 
   cameFromForm: boolean = false;
   temp: string = "";
 
   //paging variables
-  pageNum: number = 1;
+  pageNumber: number = 0;
   pageSize: number = 10;
 
   constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService,
     private route: ActivatedRoute, private getBugById: GetBugByIdService,
     private router: Router, private delBug: DeleteBugService) { }
 
-    ngOnInit(): void {
+  ngOnInit(): void {
 
-      if(!(this.route.snapshot.queryParamMap.get('id') === null)) {
+    if (!(this.route.snapshot.queryParamMap.get('id') === null)) {
       this.cameFromForm = true;
       this.route.queryParams.subscribe(value => {
         this.temp = value.id;
@@ -58,29 +60,29 @@ export class GetDataComponent implements OnInit {
     }
 
     if (this.cameFromForm) {
-      this.clearParams();
+      // this.clearParams();
       this.getBugById.getBugById(this.temp).subscribe(data => {
         this.bugs.push(data);
       })
     }
 
-    this.ust1.getBugs().subscribe((data) => {
+    this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
       data.map((it) => {
         this.bugs.push(it)
       })
     })
   }
 
-  clearParams() {
-    this.router.navigate(
-      ['.'],
-      { relativeTo: this.route }
-    )
-    }
+  // clearParams() {
+  //   this.router.navigate(
+  //     ['.'],
+  //     { relativeTo: this.route }
+  //   )
+  //   }
 
   getHeader(event: Event): void {
     // We get table header id(e.g. "title") from html 
-    let value: string = (event.target as Element).id;
+    this.value = (event.target as Element).id;
 
     // According to the id we send a request to the API and we get the sorted
     // data from url?sort=${id},${order} where order is by default ascending
@@ -90,49 +92,49 @@ export class GetDataComponent implements OnInit {
     // case we inverse the order. If another header is clicked, then the order  
     // of the other tabs are changed back to ascending.
 
-    if (value == 'title') {
+    if (this.value == 'title') {
       this.counters = [1, 0, 0, 0, 0];
       this.bugs = [];
-      this.getSortedService.getSortedBugs(value, this.sortDesc[0]).subscribe((data) => {
+      this.getSortedService.getSortedBugs(this.value, this.sortDesc[0], this.pageNumber, this.pageSize).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
       })
       this.sortDesc = [!this.sortDesc[0], true, false, true, false];
-    } else if (value == 'priority') {
+    } else if (this.value == 'priority') {
       this.counters = [0, 1, 0, 0, 0];
       this.bugs = [];
-      this.getSortedService.getSortedBugs(value, this.sortDesc[1]).subscribe((data) => {
+      this.getSortedService.getSortedBugs(this.value, this.sortDesc[1], this.pageNumber, this.pageSize).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
       })
       this.sortDesc = [false, !this.sortDesc[1], false, true, false];
 
-    } else if (value == 'reporter') {
+    } else if (this.value == 'reporter') {
       this.counters = [0, 0, 1, 0, 0];
       this.bugs = [];
-      this.getSortedService.getSortedBugs(value, this.sortDesc[2]).subscribe((data) => {
+      this.getSortedService.getSortedBugs(this.value, this.sortDesc[2], this.pageNumber, this.pageSize).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
       })
       this.sortDesc = [false, true, !this.sortDesc[2], true, false];
 
-    } else if (value == 'createdAt') {
+    } else if (this.value == 'createdAt') {
       this.counters = [0, 0, 0, 1, 0];
       this.bugs = [];
-      this.getSortedService.getSortedBugs(value, this.sortDesc[3]).subscribe((data) => {
+      this.getSortedService.getSortedBugs(this.value, this.sortDesc[3], this.pageNumber, this.pageSize).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
       })
       this.sortDesc = [false, true, false, !this.sortDesc[3], false];
 
-    } else if (value == 'status') {
+    } else if (this.value == 'status') {
       this.counters = [0, 0, 0, 0, 1];
       this.bugs = [];
-      this.getSortedService.getSortedBugs(value, this.sortDesc[4]).subscribe((data) => {
+      this.getSortedService.getSortedBugs(this.value, this.sortDesc[4], this.pageNumber, this.pageSize).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
@@ -142,15 +144,15 @@ export class GetDataComponent implements OnInit {
   }
   //pass data to the route-needs to ActivatedRoute to the navigated path and this.route.snapshot.queryParamMap.get('id') to get the id
   editBug(item: Bugs) {
-    this.router.navigate(["bug_reporting_form"], {queryParams: {id: item.id}})
+    this.router.navigate(["bug_reporting_form"], { queryParams: { id: item.id } })
   }
 
-  deleteBug (item: Bugs) {
+  deleteBug(item: Bugs) {
     this.bugs = []
     this.delBug.deleteBugs(item.id).subscribe()
     this.counters = [0, 0, 0, 0, 0];
     this.sortDesc = [false, true, false, true, false];
-    this.ust1.getBugs().subscribe((data) => {
+    this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
       data.map((it) => {
         if (item.id === it.id) {
           return;
@@ -159,11 +161,62 @@ export class GetDataComponent implements OnInit {
       })
     })
   }
-  prev10 () {
-
+  prevPage() {
+    //prevent assigning negative page number
+    if (this.pageNumber > 0) {
+      this.pageNumber--;
+      this.bugs = [];
+      this.cameFromForm = false;
+      if (this.value === "") {
+        this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+          data.map((it) => {
+            this.bugs.push(it)
+          })
+        })
+      } else {
+        //find the sortDesc boolean variable
+        for (let i = 0; i <= this.counters.length; i++) {
+          if (this.counters[i] != 0) {
+            this.sortDescIndex = i;
+          }
+        }
+        this.getSortedService.getSortedBugs(this.value, this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
+          data.map((it) => {
+            this.bugs.push(it)
+          })
+        })
+      }
+    } else {
+      return;
+    }
   }
-  next10 () {
-    
+  nextPage() {
+    if (this.pageNumber >= 0) {
+      this.pageNumber++;
+      this.bugs = [];
+      this.cameFromForm = false;
+      if (this.value === "") {
+        this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+          data.map((it) => {
+            this.bugs.push(it)
+          })
+        })
+      } else {
+        //find the sortDesc boolean variable
+        for (let i = 0; i <= this.counters.length; i++) {
+          if (this.counters[i] != 0) {
+            this.sortDescIndex = i;
+          }
+        }
+        this.getSortedService.getSortedBugs(this.value, this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
+          data.map((it) => {
+            this.bugs.push(it)
+          })
+        })
+      }
+    } else {
+      return;
+    }
   }
 
 }

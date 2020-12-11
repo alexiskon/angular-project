@@ -33,3 +33,22 @@
     padding-top: 2px;
     box-shadow: none;
 }
+
+.comment-style{
+    background-color: rgb(201, 201, 201);
+    padding: 10px;
+    padding-bottom: 45px;
+    margin:15px;
+    border-radius: 10px;
+}
+
+.delete-comment{
+    background-color: red;
+    color: white;
+    margin: 10px;
+    cursor: pointer;
+    padding:3px;
+    height:15px;
+    width:15px;
+}
+

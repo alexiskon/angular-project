@@ -5,10 +5,11 @@ import { faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
-import { faSort } from '@fortawesome/free-solid-svg-icons';
+import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { GetSortedDataService } from 'src/app/services/ust1-services/get-sorted-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.service';
+import { DeleteBugService } from 'src/app/services/ust2-services/delete-bug.service';
 
 
 @Component({
@@ -19,6 +20,8 @@ import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.
 export class GetDataComponent implements OnInit {
 
   // Font Awesome Icons
+  pageBtnRight = faArrowAltCircleRight;
+  pageBtnLeft = faArrowAltCircleLeft;
   sortAlphabeticalDownIcon = faSortAlphaDown;
   sortNumberDownIcon = faSortNumericDown;
   sortAlphabeticalUpIcon = faSortAlphaUp;
@@ -31,11 +34,16 @@ export class GetDataComponent implements OnInit {
   bugs: Bugs[] = [];
   cameFromForm: boolean = false;
   newBug!: Bugs;
+  pageNumber: number = 0;
+  pageSize: number = 10;
+  value: string = "";
+  indexOfSortHeader: number = -1;
   // sortDesc[i] is true when the i-th header is sorted descendingly
   // [0:title, 1:priority, 2:reporter, 3:createdAt, 4:status]
   sortDesc: boolean[] = [false, true, false, true, false];
   constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService,
-    private route: ActivatedRoute, private getBugById: GetBugByIdService, private router: Router) { }
+    private route: ActivatedRoute, private getBugById: GetBugByIdService, private router: Router,
+    private delBug: DeleteBugService) { }
 
   ngOnInit(): void {
     let temp: string = "";
@@ -52,7 +60,7 @@ export class GetDataComponent implements OnInit {
         this.bugs.push(data)
       })
     }
-    this.ust1.getBugs().subscribe((data) => {
+    this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
       data.map((it) => {
         if (it.id === temp) {
           this.clearParams();
@@ -72,8 +80,9 @@ export class GetDataComponent implements OnInit {
 
   getHeader(event: Event): void {
     // We get table header id(e.g. "title") from html 
-    let value: string = (event.target as Element).id;
+    this.value = (event.target as Element).id;
     this.cameFromForm = false;
+    this.pageNumber = 0;
     // According to the id we send a request to the API and we get the sorted
     // data from url?sort=${id},${order} where order is by default ascending
     // for alphabetical values, descending for priority to show the most 
@@ -82,26 +91,31 @@ export class GetDataComponent implements OnInit {
     // case we inverse the order. If another header is clicked, then the order  
     // of the other tabs are changed back to ascending.
 
-    if (value == 'title') {
-      this.headerHandle(value, 0);
+    if (this.value == 'title') {
+      this.indexOfSortHeader = 0;
+      this.headerHandle(this.value, this.indexOfSortHeader);
     }
-    else if (value == 'priority') {
-      this.headerHandle(value, 1);
+    else if (this.value == 'priority') {
+      this.indexOfSortHeader = 1;
+      this.headerHandle(this.value, this.indexOfSortHeader);
     }
-    else if (value == 'reporter') {
-      this.headerHandle(value, 2);
+    else if (this.value == 'reporter') {
+      this.indexOfSortHeader = 2;
+      this.headerHandle(this.value, this.indexOfSortHeader);
     }
-    else if (value == 'createdAt') {
-      this.headerHandle(value, 3);
+    else if (this.value == 'createdAt') {
+      this.indexOfSortHeader = 3;
+      this.headerHandle(this.value, this.indexOfSortHeader);
     }
-    else if (value == 'status') {
-      this.headerHandle(value, 4);
+    else if (this.value == 'status') {
+      this.indexOfSortHeader = 4;
+      this.headerHandle(this.value, this.indexOfSortHeader);
     }
   }
 
   headerHandle(value: string, index: number) {
     this.bugs = [];
-    this.getSortedService.getSortedBugs(value, this.sortDesc[index]).subscribe((data) => {
+    this.getSortedService.getSortedBugs(value, this.sortDesc[index], this.pageNumber, this.pageSize).subscribe((data) => {
       data.map((it) => {
         this.bugs.push(it)
       })
@@ -124,5 +138,65 @@ export class GetDataComponent implements OnInit {
 
   editClicked(bug: Bugs) {
     this.router.navigate(['bug_reporting_form'], { queryParams: { id: bug.id } });
+  }
+  deleteBug(item: Bugs) {
+    this.bugs = []
+    this.delBug.deleteBugs(item.id).subscribe()
+    this.cameFromForm = false;
+    this.sortDesc = [false, true, false, true, false];
+    this.counters = [0, 0, 0, 0, 0];
+
+
+    this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+      data.map((it) => {
+        if (item.id === it.id) {
+          return;
+        }
+        this.bugs.push(it)
+      })
+    });
+  }
+
+  next10() {
+    this.cameFromForm = false;
+    this.clearParams();
+    this.pageNumber++;
+    this.bugs = [];
+    if (this.value === "") {
+      this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+        data.map((it) => {
+          this.bugs.push(it)
+        })
+      });
+    }
+    else {
+      this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.indexOfSortHeader], this.pageNumber, this.pageSize).subscribe((data) => {
+        data.map((it) => {
+          this.bugs.push(it)
+        })
+      })
+    }
+
+  }
+
+  previous10() {
+    this.cameFromForm = false;
+    this.pageNumber--;
+    this.bugs = [];
+    this.clearParams();
+    if (this.value === "") {
+      this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+        data.map((it) => {
+          this.bugs.push(it)
+        })
+      });
+    }
+    else {
+      this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.indexOfSortHeader], this.pageNumber, this.pageSize).subscribe((data) => {
+        data.map((it) => {
+          this.bugs.push(it)
+        })
+      })
+    }
   }
 }

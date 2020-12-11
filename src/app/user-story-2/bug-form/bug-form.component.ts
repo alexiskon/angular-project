@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { Bugs } from 'src/app/interfaces/bugs';
 import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.service';
 import { PostBugService } from 'src/app/services/ust2-services/post-bug.service';
 import { PutBugService } from 'src/app/services/ust2-services/put-bug.service';
+import { Comments } from '../../interfaces/comments';
 
 @Component({
   selector: 'codehub-bug-form',
@@ -24,14 +25,49 @@ export class BugFormComponent implements OnInit {
   constructor(private fb: FormBuilder, private postService: PostBugService, private router: Router,
     private route: ActivatedRoute, private getBugById: GetBugByIdService, private putBugService: PutBugService) { }
 
+  get comments() {
+    // console.log(this.bugForm.get('comments') as FormArray)
+    return this.bugForm.get('comments') as FormArray;
+    // return this.bugForm.controls.comments as FormArray;
+
+  }
+
+
+
+  private commentItem(desc?: string, name?: string) {
+    return this.fb.group({
+      // description: desc,
+      // name: name
+      description: [desc],
+      name: [name]
+    })
+  }
+
+  addComment() {
+    this.comments.push(this.commentItem())
+  }
+
+  removeComment(index: number) {
+    this.comments.removeAt(index);
+  }
+
   ngOnInit(): void {
     this.bugForm = this.fb.group({
       title: [null, Validators.required],
       description: [null, Validators.required],
       priority: [null, Validators.required],
       reporter: [null, Validators.required],
-      status: []
+      status: [],
+      comments: this.fb.array([
+        // this.fb.group({
+        //   description:[],
+        //   name: []
+        // })
+      ])
+
     });
+
+    let commentValues: Comments[] = [];
     if (!(this.route.snapshot.queryParamMap.get('id') == null)) {
       this.editClicked = true;
       this.route.queryParams.subscribe(p => {
@@ -40,17 +76,22 @@ export class BugFormComponent implements OnInit {
     }
     if (this.editClicked) {
       this.getBugById.getBugById(this.temp).subscribe(it => {
+        commentValues = it.comments;
+        console.log(it.comments, commentValues)
         this.bugForm = this.fb.group({
           title: [it.title, Validators.required],
           description: [it.description, Validators.required],
           priority: [it.priority.toString(), Validators.required],
           reporter: [it.reporter, Validators.required],
-          status: [it.status]
+          status: [it.status],
+          comments: this.fb.array([])
         });
-      })
+        commentValues.forEach(comment => {
+          console.log("YES")
+          this.comments.push(this.commentItem(comment.description, comment.reporter));
+        });
+      })      
     }
-    // else{}
-
     this.bugForm.controls.reporter.valueChanges.subscribe
       (value => {
         const statusFormControl = this.bugForm.controls.status;
@@ -76,7 +117,7 @@ export class BugFormComponent implements OnInit {
           this.router.navigate([''], { queryParams: { id: value.id } });
         });
       }
-      else{
+      else {
         let bugCreated: Bugs = this.bugForm.value
         this.putBugService.putBugs(this.temp, bugCreated).subscribe(value => {
           this.router.navigate([''], { queryParams: { id: value.id } });

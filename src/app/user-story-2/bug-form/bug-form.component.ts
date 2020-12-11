@@ -26,18 +26,13 @@ export class BugFormComponent implements OnInit {
     private route: ActivatedRoute, private getBugById: GetBugByIdService, private putBugService: PutBugService) { }
 
   get comments() {
-    // console.log(this.bugForm.get('comments') as FormArray)
     return this.bugForm.get('comments') as FormArray;
-    // return this.bugForm.controls.comments as FormArray;
-
   }
 
 
 
   private commentItem(desc?: string, name?: string) {
     return this.fb.group({
-      // description: desc,
-      // name: name
       description: [desc],
       name: [name]
     })
@@ -58,13 +53,7 @@ export class BugFormComponent implements OnInit {
       priority: [null, Validators.required],
       reporter: [null, Validators.required],
       status: [],
-      comments: this.fb.array([
-        // this.fb.group({
-        //   description:[],
-        //   name: []
-        // })
-      ])
-
+      comments: this.fb.array([])
     });
 
     let commentValues: Comments[] = [];
@@ -77,7 +66,6 @@ export class BugFormComponent implements OnInit {
     if (this.editClicked) {
       this.getBugById.getBugById(this.temp).subscribe(it => {
         commentValues = it.comments;
-        console.log(it.comments, commentValues)
         this.bugForm = this.fb.group({
           title: [it.title, Validators.required],
           description: [it.description, Validators.required],
@@ -86,11 +74,13 @@ export class BugFormComponent implements OnInit {
           status: [it.status],
           comments: this.fb.array([])
         });
-        commentValues.forEach(comment => {
-          console.log("YES")
-          this.comments.push(this.commentItem(comment.description, comment.reporter));
-        });
-      })      
+        if (commentValues) {
+          commentValues.forEach(comment => {
+            // console.log("YES")
+            this.comments.push(this.commentItem(comment.description, comment.reporter));
+          });
+        }
+      })
     }
     this.bugForm.controls.reporter.valueChanges.subscribe
       (value => {

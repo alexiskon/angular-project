@@ -37,7 +37,7 @@ export class GetDataComponent implements OnInit {
   pageNumber: number = 0;
   pageSize: number = 10;
   value: string = "";
-  indexOfSortHeader: number = -1;
+  sortDescIndex: number = -1;
   // sortDesc[i] is true when the i-th header is sorted descendingly
   // [0:title, 1:priority, 2:reporter, 3:createdAt, 4:status]
   sortDesc: boolean[] = [false, true, false, true, false];
@@ -92,24 +92,19 @@ export class GetDataComponent implements OnInit {
     // of the other tabs are changed back to ascending.
 
     if (this.value == 'title') {
-      this.indexOfSortHeader = 0;
-      this.headerHandle(this.value, this.indexOfSortHeader);
+      this.headerHandle(this.value, 0);
     }
     else if (this.value == 'priority') {
-      this.indexOfSortHeader = 1;
-      this.headerHandle(this.value, this.indexOfSortHeader);
+      this.headerHandle(this.value, 1);
     }
     else if (this.value == 'reporter') {
-      this.indexOfSortHeader = 2;
-      this.headerHandle(this.value, this.indexOfSortHeader);
+      this.headerHandle(this.value, 2);
     }
     else if (this.value == 'createdAt') {
-      this.indexOfSortHeader = 3;
-      this.headerHandle(this.value, this.indexOfSortHeader);
+      this.headerHandle(this.value, 3);
     }
     else if (this.value == 'status') {
-      this.indexOfSortHeader = 4;
-      this.headerHandle(this.value, this.indexOfSortHeader);
+      this.headerHandle(this.value, 4);
     }
   }
 
@@ -157,46 +152,105 @@ export class GetDataComponent implements OnInit {
     });
   }
 
-  next10() {
-    this.cameFromForm = false;
-    this.clearParams();
-    this.pageNumber++;
-    this.bugs = [];
-    if (this.value === "") {
-      this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      });
-    }
-    else {
-      this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.indexOfSortHeader], this.pageNumber, this.pageSize).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-    }
+  // next10() {
+  //   this.cameFromForm = false;
+  //   this.clearParams();
+  //   this.pageNumber++;
+  //   this.bugs = [];
+  //   if (this.value === "") {
+  //     this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+  //       data.map((it) => {
+  //         this.bugs.push(it)
+  //       })
+  //     });
+  //   }
+  //   else {
 
+  //     this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.indexOfSortHeader], this.pageNumber, this.pageSize).subscribe((data) => {
+  //       data.map((it) => {
+  //         this.bugs.push(it)
+  //       })
+  //     })
+  //   }
+
+  // }
+
+  nextPage() {
+    if (this.pageNumber >= 0) {
+      this.pageNumber++;
+      this.bugs = [];
+      this.cameFromForm = false;
+      if (this.value === "") {
+        this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+          data.map((it) => {
+            this.bugs.push(it)
+          })
+        })
+      } else {
+        //find the sortDesc boolean variable
+        for (let i = 0; i < this.counters.length; i++) {
+          if (this.counters[i] != 0) {
+            this.sortDescIndex = i;
+          }
+        }
+        this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
+          data.map((it) => {
+            this.bugs.push(it)
+          })
+        })
+      }
+    } else {
+      return;
+    }
   }
 
-  previous10() {
-    this.cameFromForm = false;
-    this.pageNumber--;
-    this.bugs = [];
-    this.clearParams();
-    if (this.value === "") {
-      this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
+  previousPage() {
+    if (this.pageNumber >= 0) {
+      this.pageNumber--;
+      this.bugs = [];
+      this.cameFromForm = false;
+      if (this.value === "") {
+        this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+          data.map((it) => {
+            this.bugs.push(it)
+          })
         })
-      });
-    }
-    else {
-      this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.indexOfSortHeader], this.pageNumber, this.pageSize).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
+      } else {
+        //find the sortDesc boolean variable
+        for (let i = 0; i <= this.counters.length; i++) {
+          if (this.counters[i] != 0) {
+            this.sortDescIndex = i;
+          }
+        }
+        this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
+          data.map((it) => {
+            this.bugs.push(it)
+          })
         })
-      })
+      }
+    } else {
+      return;
     }
   }
+
+  // previous10() {
+  //   this.cameFromForm = false;
+  //   this.pageNumber--;
+  //   this.bugs = [];
+  //   this.clearParams();
+  //   if (this.value === "") {
+  //     this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+  //       data.map((it) => {
+  //         this.bugs.push(it)
+  //       })
+  //     });
+  //   }
+  //   else {
+  //     this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.indexOfSortHeader], this.pageNumber, this.pageSize).subscribe((data) => {
+  //       data.map((it) => {
+  //         this.bugs.push(it)
+  //       })
+  //     })
+  //   }
+  // }
 }

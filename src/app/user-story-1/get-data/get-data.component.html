@@ -39,6 +39,6 @@
   </tbody>
 </table>
 <div class="text-center">
-  <fa-icon class="page-btn" [icon]="pageBtnLeft" (click)="previous10()" ></fa-icon>
-  <fa-icon class="page-btn" [icon]="pageBtnRight" (click)="next10()"></fa-icon>
+  <fa-icon class="page-btn" *ngIf="pageNumber>0"  [icon]="pageBtnLeft" (click)="previousPage()" ></fa-icon>
+  <fa-icon class="page-btn" [icon]="pageBtnRight" (click)="nextPage()"></fa-icon>
 </div>

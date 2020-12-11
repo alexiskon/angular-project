@@ -13,7 +13,6 @@ export class GetSortedDataService {
 
   getSortedBugs (header: string, desc: boolean, pageNum: number,pageSize: number): Observable<Bugs[]> {
     let sortOrder = desc  ? 'desc': 'asc'; 
-    // let sortedUrl = this.url + '?sort=' + header + ',' + sortOrder;
     let sortedUrl = `${this.url}?sort=${header},${sortOrder}&page=${pageNum}&size=${pageSize}`;
     return this.http.get<Bugs[]>(sortedUrl)
   }

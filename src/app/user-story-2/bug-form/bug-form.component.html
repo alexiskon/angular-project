@@ -24,15 +24,15 @@
                             *ngIf="bugForm.controls.priority.invalid">*</span></label>
                     <div class="form-check">
                         <input formControlName="priority" type="radio" value="1">
-                        <label class="form-check-label ml-2" for="priority">Minor</label>
+                        <label class="form-check-label ml-2 text-success" for="priority">Minor</label>
                     </div>
                     <div class="form-check">
                         <input formControlName="priority" type="radio" value="2">
-                        <label class="form-check-label ml-2" for="priority">Major</label>
+                        <label class="form-check-label ml-2 text-warning" for="priority">Major</label>
                     </div>
                     <div class="form-check">
                         <input formControlName="priority" type="radio" value="3">
-                        <label class="form-check-label ml-2" for="priority">Critical</label>
+                        <label class="form-check-label ml-2 text-danger" for="priority">Critical</label>
                     </div>
                     <div class="invalid" *ngIf="bugForm.controls.priority.invalid && submitted">This field is required
                     </div>

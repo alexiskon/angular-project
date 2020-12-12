@@ -2,9 +2,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { UserStory1Module } from './user-story-1/user-story-1.module';
+import { BugTableModule } from './bug-table/bug-table.module';
 import { HttpClientModule } from '@angular/common/http';
-import { UserStory2Module } from './user-story-2/user-story-2.module';
+import { CreateEditFormModule } from './create-edit-form/create-edit-form.module';
 
 
 @NgModule({
@@ -14,9 +14,9 @@ import { UserStory2Module } from './user-story-2/user-story-2.module';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    UserStory1Module,
+    BugTableModule,
     HttpClientModule,
-    UserStory2Module,
+    CreateEditFormModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

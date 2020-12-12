@@ -16,4 +16,4 @@ import { FormsModule } from '@angular/forms';
   ],
   exports: [GetDataComponent]
 })
-export class UserStory1Module { }
+export class BugTableModule { }

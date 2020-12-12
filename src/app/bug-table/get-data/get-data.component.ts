@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Bugs } from '../../interfaces/bugs'
-import { Ust1Service } from '../../services/ust1-services/ust1.service';
+import { Ust1Service } from '../../services/table-services/ust1.service';
 import { faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
 import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
-import { GetSortedDataService } from 'src/app/services/ust1-services/get-sorted-data.service';
+import { GetSortedDataService } from 'src/app/services/table-services/get-sorted-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GetBugByIdService } from 'src/app/services/ust2-services/get-bug-by-id.service';
-import { DeleteBugService } from 'src/app/services/ust2-services/delete-bug.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { GetBugByIdService } from 'src/app/services/form-services/get-bug-by-id.service';
+import { DeleteBugService } from 'src/app/services/form-services/delete-bug.service';
 
 
 @Component({
@@ -160,60 +159,37 @@ export class GetDataComponent implements OnInit {
   }
 
   nextPage() {
-    if (this.pageNumber >= 0) {
-      this.pageNumber++;
-      this.bugs = [];
-      this.cameFromForm = false;
-      if (this.value === "") {
-        this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
-          data.map((it) => {
-            this.bugs.push(it)
-          })
-        })
-      } else {
-        //find the sortDesc boolean variable
-        for (let i = 0; i < this.counters.length; i++) {
-          if (this.counters[i] != 0) {
-            this.sortDescIndex = i;
-          }
-        }
-        this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
-          data.map((it) => {
-            this.bugs.push(it)
-          })
-        })
-      }
-    } else {
-      return;
-    }
+    this.pageNumber++;
+    this.pageManipulation(this.pageNumber)
   }
 
   previousPage() {
-    if (this.pageNumber >= 0) {
-      this.pageNumber--;
-      this.bugs = [];
-      this.cameFromForm = false;
-      if (this.value === "") {
-        this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
-          data.map((it) => {
-            this.bugs.push(it)
-          })
+    this.pageNumber--;
+    this.pageManipulation(this.pageNumber)
+  }
+
+  pageManipulation(pageNum: number){
+    this.bugs = [];
+    this.cameFromForm = false;
+    if (this.value === "") {
+      this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+        data.map((it) => {
+          this.bugs.push(it)
         })
-      } else {
-        //find the sortDesc boolean variable
-        for (let i = 0; i < this.counters.length; i++) {
-          if (this.counters[i] != 0) {
-            this.sortDescIndex = i;
-          }
+      })
+    }
+    else {
+      //find the sortDesc boolean variable
+      for (let i = 0; i < this.counters.length; i++) {
+        if (this.counters[i] != 0) {
+          this.sortDescIndex = i;
         }
-        this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
-          data.map((it) => {
-            this.bugs.push(it)
-          })
-        })
       }
-    } else {
-      return;
+      this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
+        data.map((it) => {
+          this.bugs.push(it)
+        })
+      })
     }
   }
 }

@@ -27,6 +27,12 @@ export class GetDataComponent implements OnInit {
   pageBtnRight = faArrowAltCircleRight;
   pagebtnLeft = faArrowAltCircleLeft;
 
+  titleSearch: string = "";
+  prioritySearch: string = "";
+  dateSearch: string = "";
+  reporterSearch: string = "";
+  statusSearch: string = "";
+
 
   // if counter[i] == 0 the icon that shows the 
   // sort direction(asc,desc) is not displayed  
@@ -83,7 +89,7 @@ export class GetDataComponent implements OnInit {
   getHeader(event: Event): void {
     // We get table header id(e.g. "title") from html 
     this.value = (event.target as Element).id;
-
+    this.pageNumber = 0;
     // According to the id we send a request to the API and we get the sorted
     // data from url?sort=${id},${order} where order is by default ascending
     // for alphabetical values, descending for priority to show the most 
@@ -163,60 +169,51 @@ export class GetDataComponent implements OnInit {
   }
   prevPage() {
     //prevent assigning negative page number
-    if (this.pageNumber > 0) {
-      this.pageNumber--;
-      this.bugs = [];
-      this.cameFromForm = false;
-      if (this.value === "") {
-        this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
-          data.map((it) => {
-            this.bugs.push(it)
-          })
+    this.pageNumber--;
+    this.bugs = [];
+    this.cameFromForm = false;
+    if (this.value === "") {
+      this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+        data.map((it) => {
+          this.bugs.push(it)
         })
-      } else {
-        //find the sortDesc boolean variable
-        for (let i = 0; i < this.counters.length; i++) {
-          if (this.counters[i] != 0) {
-            this.sortDescIndex = i;
-          }
-        }
-        this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
-          data.map((it) => {
-            this.bugs.push(it)
-          })
-        })
-      }
+      })
     } else {
-      return;
+      //find the sortDesc boolean variable
+      for (let i = 0; i < this.counters.length; i++) {
+        if (this.counters[i] != 0) {
+          this.sortDescIndex = i;
+        }
+      }
+      this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
+        data.map((it) => {
+          this.bugs.push(it)
+        })
+      })
     }
   }
   nextPage() {
-    if (this.pageNumber >= 0) {
-      this.pageNumber++;
-      this.bugs = [];
-      this.cameFromForm = false;
-      if (this.value === "") {
-        this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
-          data.map((it) => {
-            this.bugs.push(it)
-          })
+    this.pageNumber++;
+    this.bugs = [];
+    this.cameFromForm = false;
+    if (this.value === "") {
+      this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+        data.map((it) => {
+          this.bugs.push(it)
         })
-      } else {
-        //find the sortDesc boolean variable
-        for (let i = 0; i < this.counters.length; i++) {
-          if (this.counters[i] != 0) {
-            this.sortDescIndex = i;
-          }
-        }
-        this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
-          data.map((it) => {
-            this.bugs.push(it)
-          })
-        })
-      }
+      })
     } else {
-      return;
+      //find the sortDesc boolean variable
+      for (let i = 0; i < this.counters.length; i++) {
+        if (this.counters[i] != 0) {
+          this.sortDescIndex = i;
+        }
+      }
+      this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
+        data.map((it) => {
+          this.bugs.push(it)
+        })
+      })
     }
   }
-
 }

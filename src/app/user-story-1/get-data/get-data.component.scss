@@ -1,30 +1,82 @@
 .table {
-    margin-top: 2%;
-    border-radius: 5px 5px 0 0;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0.15);
+  margin-top: 2%;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0.15);
+  table-layout: fixed;
 }
 
-tr{
-    opacity: 0.65;
-    transition-duration: 0.2s;
+.td-data {
+  overflow: hidden;
 }
 
-tr:hover{
-        opacity:1;
+td:nth-child(1) {
+  width: 28%;
 }
-.header-row{
-    opacity:1;
+
+td:nth-child(2) {
+  width: 8%;
 }
-th:hover{
-    color: lightblue;
-    cursor: pointer;
-    transition-duration: 0.3s;
+
+td:nth-child(3) {
+  width: 8%;
 }
+
+td:nth-child(4) {
+  width: 20.8%;
+}
+
+td:nth-child(5) {
+  width: 18%;
+}
+
+tr {
+  opacity: 0.65;
+  transition-duration: 0.2s;
+}
+
+.search-btn {
+  color: whitesmoke;
+  border-radius: round;
+  border: 1px solid whitesmoke
+}
+
+.search-btn:hover {
+  color: lightblue;
+  border: 1px solid lightblue
+}
+
+.header-row {
+  margin: -10px;
+  background-color: #343a40;
+}
+
+.search-input {
+  border: none;
+  border-radius: 100px;
+}
+
+tr:hover {
+  opacity: 1;
+}
+
+.header-row {
+  opacity: 1;
+}
+
+th:hover {
+  color: lightblue;
+  cursor: pointer;
+  transition-duration: 0.3s;
+}
+
+.highlight-first:nth-child(1) {
+  background-color: lightblue;
+  opacity: 0.9;
+}
+
 .page-btn {
-    font-size: 30px;
-    margin: 6px;
-}
-#pagingBtns:hover {
-    cursor: pointer;
+  font-size: 37px;
+  margin: 2px;
+  cursor: pointer;
 }

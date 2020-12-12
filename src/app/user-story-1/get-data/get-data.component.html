@@ -1,6 +1,39 @@
 <button class="btn btn-dark" [routerLink]="['bug_reporting_form']">Create New</button>
 
 <table class="table table-hover">
+
+
+  <thead class="thead-dark">
+    <tr class="header-row">
+      <td class="form-group"><input class="form-control search-input" name="title" [(ngModel)]="titleSearch"></td>
+      <td class="form-group"><select class="form-control search-input" name="priority" [(ngModel)]="prioritySearch">
+          <option [ngValue]="null"></option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+        </select></td>
+      <td class="form-group"><select class="form-control search-input" name="reporter" [(ngModel)]="reporterSearch">
+          <option [ngValue]="null"></option>
+          <option>QA</option>
+          <option>PO</option>
+          <option>DEV</option>
+        </select></td>
+      <td class="form-group"><input class="form-control search-input" name="date" type="datetime-local" placeholder=" "
+          [(ngModel)]="dateSearch"></td>
+      <td class="form-group"><select class="form-control search-input" name="status" [(ngModel)]="statusSearch">
+          <option [ngValue]="null"></option>
+          <option>Ready for testing</option>
+          <option>Done</option>
+          <option>Rejected</option>
+        </select></td>
+      <td><button class="btn search-btn" type="submit">Search</button></td>
+      <td></td>
+    </tr>
+  </thead>
+
+
+
+
   <thead class="thead-dark">
     <tr class="header-row">
       <th id="title" scope="col" (click)="getHeader($event)">
@@ -30,18 +63,19 @@
 
   <tbody>
     <tr *ngFor="let item of bugs">
-      <td>{{ item.title }}</td>
-      <td>{{ item.priority }}</td>
-      <td>{{ item.reporter }}</td>
-      <td>{{ item.createdAt | date: "dd/MM/yyyy hh:mm:ss" }}</td>
-      <td>{{ item.status }}</td>
+      <td class="td-data">{{ item.title }}</td>
+      <td class="td-data">{{ item.priority }}</td>
+      <td class="td-data">{{ item.reporter }}</td>
+      <td class="td-data">{{ item.createdAt | date: "dd/MM/yyyy hh:mm:ss" }}</td>
+      <td class="td-data">{{ item.status }}</td>
       <td><button class="btn btn-dark" type="submit" (click)="editBug(item)">Edit</button></td>
-      <td><button class="btn btn-dark" style="background-color: red;" type="submit" (click)="deleteBug(item)">Delete</button></td>
+      <td><button class="btn btn-dark" style="background-color: red;" type="submit"
+          (click)="deleteBug(item)">Delete</button></td>
     </tr>
   </tbody>
 </table>
 
-<div class="text-center" id="pagingBtns" >
+<div class="text-center" id="pagingBtns">
   <fa-icon *ngIf="pageNumber>0" [icon]="pagebtnLeft" class="page-btn" (click)="prevPage()"></fa-icon>
 
 

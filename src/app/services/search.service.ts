@@ -11,11 +11,11 @@ export class SearchService {
   constructor(private http: HttpClient) { }
 
   url = 'https://bug-report-system-server.herokuapp.com/bugs'
-  searchResults (pageNum: number, pageSize: number, title?: string, priority?: string, reporter?: string, status?: string, desc?: boolean, header?: string): Observable<Bugs[]> {
+  searchResults (pageNum: number, pageSize: number, desc?: boolean, header?: string, title?: string, priority?: string, reporter?: string, status?: string): Observable<Bugs[]> {
     let sortOrder = desc  ? 'desc': 'asc'; 
-
+    let headerOrder = header === "" ? "": header + ',' + sortOrder;
     return this.http.get<Bugs[]>(`${this.url}?page=${pageNum}&size=${pageSize}
-    &title=${title}&priority=${priority}&reporter=${reporter}&status=${status}&sort=${header},${sortOrder}`)
+    &title=${title}&priority=${priority}&reporter=${reporter}&status=${status}&sort=${headerOrder}`)
   }
 
 }

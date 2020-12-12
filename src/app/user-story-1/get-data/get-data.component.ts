@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Bugs } from '../../interfaces/bugs'
-import { Ust1Service } from '../../services/ust1.service';
 import { faSortNumericDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
 import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight, faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
-import { GetSortedDataService } from 'src/app/services/get-sorted-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
 import { DeleteBugService } from 'src/app/services/delete-bug.service';
+import { UrlConstructor } from 'src/app/services/url-constructor';
 
 
 @Component({
@@ -17,6 +16,9 @@ import { DeleteBugService } from 'src/app/services/delete-bug.service';
   styleUrls: ['./get-data.component.scss']
 })
 export class GetDataComponent implements OnInit {
+
+  constructor(private route: ActivatedRoute, private getBugById: GetBugByIdService,
+    private router: Router, private delBug: DeleteBugService, private urlC: UrlConstructor) { }
 
   // Font Awesome Icons
   sortAlphabeticalDownIcon = faSortAlphaDown;
@@ -27,11 +29,19 @@ export class GetDataComponent implements OnInit {
   pageBtnRight = faArrowAltCircleRight;
   pagebtnLeft = faArrowAltCircleLeft;
 
+  //Search properties
   titleSearch: string = "";
   prioritySearch: string = "";
   dateSearch: string = "";
   reporterSearch: string = "";
   statusSearch: string = "";
+
+  searchRequest() {
+    this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+      .subscribe(data => {
+        this.bugs = data;
+      })
+  }
 
 
   // if counter[i] == 0 the icon that shows the 
@@ -52,9 +62,7 @@ export class GetDataComponent implements OnInit {
   pageNumber: number = 0;
   pageSize: number = 10;
 
-  constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService,
-    private route: ActivatedRoute, private getBugById: GetBugByIdService,
-    private router: Router, private delBug: DeleteBugService) { }
+
 
   ngOnInit(): void {
 
@@ -72,9 +80,10 @@ export class GetDataComponent implements OnInit {
       })
     }
 
-    this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+    this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+    .subscribe((data) => {
       data.map((it) => {
-        this.bugs.push(it)
+        this.bugs.push(it)        
       })
     })
   }
@@ -101,7 +110,7 @@ export class GetDataComponent implements OnInit {
     if (this.value == 'title') {
       this.counters = [1, 0, 0, 0, 0];
       this.bugs = [];
-      this.getSortedService.getSortedBugs(this.value, this.sortDesc[0], this.pageNumber, this.pageSize).subscribe((data) => {
+      this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[0], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
@@ -110,7 +119,7 @@ export class GetDataComponent implements OnInit {
     } else if (this.value == 'priority') {
       this.counters = [0, 1, 0, 0, 0];
       this.bugs = [];
-      this.getSortedService.getSortedBugs(this.value, this.sortDesc[1], this.pageNumber, this.pageSize).subscribe((data) => {
+      this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[1], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
@@ -120,7 +129,7 @@ export class GetDataComponent implements OnInit {
     } else if (this.value == 'reporter') {
       this.counters = [0, 0, 1, 0, 0];
       this.bugs = [];
-      this.getSortedService.getSortedBugs(this.value, this.sortDesc[2], this.pageNumber, this.pageSize).subscribe((data) => {
+      this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[2], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
@@ -130,7 +139,7 @@ export class GetDataComponent implements OnInit {
     } else if (this.value == 'createdAt') {
       this.counters = [0, 0, 0, 1, 0];
       this.bugs = [];
-      this.getSortedService.getSortedBugs(this.value, this.sortDesc[3], this.pageNumber, this.pageSize).subscribe((data) => {
+      this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[3], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
@@ -140,7 +149,7 @@ export class GetDataComponent implements OnInit {
     } else if (this.value == 'status') {
       this.counters = [0, 0, 0, 0, 1];
       this.bugs = [];
-      this.getSortedService.getSortedBugs(this.value, this.sortDesc[4], this.pageNumber, this.pageSize).subscribe((data) => {
+      this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[4], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
         data.map((it) => {
           this.bugs.push(it)
         })
@@ -158,7 +167,7 @@ export class GetDataComponent implements OnInit {
     this.delBug.deleteBugs(item.id).subscribe()
     this.counters = [0, 0, 0, 0, 0];
     this.sortDesc = [false, true, false, true, false];
-    this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+    this.urlC.urlResults(this.pageNumber, this.pageSize).subscribe((data) => {
       data.map((it) => {
         if (item.id === it.id) {
           return;
@@ -170,38 +179,21 @@ export class GetDataComponent implements OnInit {
   prevPage() {
     //prevent assigning negative page number
     this.pageNumber--;
-    this.bugs = [];
-    this.cameFromForm = false;
-    if (this.value === "") {
-      this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-    } else {
-      //find the sortDesc boolean variable
-      for (let i = 0; i < this.counters.length; i++) {
-        if (this.counters[i] != 0) {
-          this.sortDescIndex = i;
-        }
-      }
-      this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-    }
+    this.pageManipulation();
   }
   nextPage() {
     this.pageNumber++;
+    this.pageManipulation();
+    
+  }
+  pageManipulation() {
     this.bugs = [];
     this.cameFromForm = false;
     if (this.value === "") {
-      this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
+      this.urlC.urlResults(this.pageNumber, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+        .subscribe(data => {
+          this.bugs = data;
         })
-      })
     } else {
       //find the sortDesc boolean variable
       for (let i = 0; i < this.counters.length; i++) {
@@ -209,11 +201,11 @@ export class GetDataComponent implements OnInit {
           this.sortDescIndex = i;
         }
       }
-      this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
+      this.urlC.urlResults(this.pageNumber, this.pageSize, !this.sortDesc[this.sortDescIndex], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+      .subscribe(data => {
+        this.bugs = data;
       })
     }
   }
+
 }

@@ -3,9 +3,9 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { Bugs } from 'src/app/interfaces/bugs';
-import { GetBugByIdService } from 'src/app/services/form-services/get-bug-by-id.service';
-import { PostBugService } from 'src/app/services/form-services/post-bug.service';
-import { PutBugService } from 'src/app/services/form-services/put-bug.service';
+import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
+import { PostBugService } from 'src/app/services/post-bug.service';
+import { PutBugService } from 'src/app/services/put-bug.service';
 import { Comments } from '../../interfaces/comments';
 
 @Component({

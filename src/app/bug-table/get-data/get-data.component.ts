@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Bugs } from '../../interfaces/bugs'
-import { Ust1Service } from '../../services/table-services/ust1.service';
+import { Ust1Service } from '../../services/ust1.service';
 import { faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
 import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
-import { GetSortedDataService } from 'src/app/services/table-services/get-sorted-data.service';
+import { GetSortedDataService } from 'src/app/services/get-sorted-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GetBugByIdService } from 'src/app/services/form-services/get-bug-by-id.service';
-import { DeleteBugService } from 'src/app/services/form-services/delete-bug.service';
+import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
+import { DeleteBugService } from 'src/app/services/delete-bug.service';
+import { UrlConstructorService } from 'src/app/services/url-constructor.service';
 
 
 @Component({
@@ -18,6 +19,40 @@ import { DeleteBugService } from 'src/app/services/form-services/delete-bug.serv
   styleUrls: ['./get-data.component.scss']
 })
 export class GetDataComponent implements OnInit {
+
+  constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService,
+    private route: ActivatedRoute, private getBugById: GetBugByIdService, private router: Router,
+    private delBug: DeleteBugService, private urlC: UrlConstructorService) { }
+
+  ngOnInit(): void {
+    let temp: string = "";
+    // If queryParams contain an id then first display in the table 
+    //the bug with this id, else render the default table
+    if (!(this.route.snapshot.queryParamMap.get('id') == null)) {
+      this.cameFromForm = true;
+      this.route.queryParams.subscribe(p => {
+        temp = p.id;
+      })
+    }
+    if (this.cameFromForm) {
+      this.getBugById.getBugById(temp).subscribe(data => {
+        this.bugs.push(data)
+      })
+    }
+    this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+      .subscribe((data) => {
+        data.map((it) => {
+          if (it.id == temp) {
+            this.clearParams();
+            return;
+          }
+          else {
+            this.bugs.push(it)
+          }
+        })
+      })
+  }
+
 
   // Font Awesome Icons
   pageBtnRight = faArrowAltCircleRight;
@@ -36,6 +71,24 @@ export class GetDataComponent implements OnInit {
   reporterSearch: string = "";
   statusSearch: string = "";
 
+  clearAndInitialize() {
+    this.titleSearch = "";
+    this.prioritySearch = "";
+    this.dateSearch = "";
+    this.reporterSearch = "";
+    this.statusSearch = "";
+    this.searchRequest();
+  }
+
+  searchRequest() {
+    this.pageNumber = 0;
+    this.clearParams();
+    this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+      .subscribe(data => {
+        this.bugs = data;
+      })
+  }
+
   counters: number[] = [0, 0, 0, 0, 0];
   bugs: Bugs[] = [];
   cameFromForm: boolean = false;
@@ -47,35 +100,6 @@ export class GetDataComponent implements OnInit {
   // sortDesc[i] is true when the i-th header is sorted descendingly
   // [0:title, 1:priority, 2:reporter, 3:createdAt, 4:status]
   sortDesc: boolean[] = [false, true, false, true, false];
-  constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService,
-    private route: ActivatedRoute, private getBugById: GetBugByIdService, private router: Router,
-    private delBug: DeleteBugService) { }
-
-  ngOnInit(): void {
-    let temp: string = "";
-    // If queryParams contain an id then first display in the table 
-    //the bug with this id, else render the default table
-    if (!(this.route.snapshot.queryParamMap.get('id') == null)) {
-      this.cameFromForm = true;
-      this.route.queryParams.subscribe(p => {
-        temp = p.id;
-      })
-    }
-    if (this.cameFromForm) {
-      this.getBugById.getBugById(temp).subscribe(data => {
-        this.bugs.push(data)
-      })
-    }
-    this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
-      data.map((it) => {
-        if (it.id === temp) {
-          this.clearParams();
-          return;
-        }
-        else this.bugs.push(it)
-      })
-    })
-  }
 
   clearParams() {
     this.router.navigate(
@@ -89,6 +113,7 @@ export class GetDataComponent implements OnInit {
     this.value = (event.target as Element).id;
     this.cameFromForm = false;
     this.pageNumber = 0;
+    this.clearParams();
     // According to the id we send a request to the API and we get the sorted
     // data from url?sort=${id},${order} where order is by default ascending
     // for alphabetical values, descending for priority to show the most 
@@ -116,7 +141,7 @@ export class GetDataComponent implements OnInit {
 
   headerHandle(value: string, index: number) {
     this.bugs = [];
-    this.getSortedService.getSortedBugs(value, this.sortDesc[index], this.pageNumber, this.pageSize).subscribe((data) => {
+    this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[index], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
       data.map((it) => {
         this.bugs.push(it)
       })
@@ -146,9 +171,7 @@ export class GetDataComponent implements OnInit {
     this.cameFromForm = false;
     this.sortDesc = [false, true, false, true, false];
     this.counters = [0, 0, 0, 0, 0];
-
-
-    this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
+    this.urlC.urlResults(this.pageNumber, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
       data.map((it) => {
         if (item.id === it.id) {
           return;
@@ -168,15 +191,14 @@ export class GetDataComponent implements OnInit {
     this.pageManipulation(this.pageNumber)
   }
 
-  pageManipulation(pageNum: number){
+  pageManipulation(pageNum: number) {
     this.bugs = [];
     this.cameFromForm = false;
     if (this.value === "") {
-      this.ust1.getBugs(this.pageNumber, this.pageSize).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
+      this.urlC.urlResults(this.pageNumber, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+        .subscribe(data => {
+          this.bugs = data;
         })
-      })
     }
     else {
       //find the sortDesc boolean variable
@@ -185,11 +207,11 @@ export class GetDataComponent implements OnInit {
           this.sortDescIndex = i;
         }
       }
-      this.getSortedService.getSortedBugs(this.value, !this.sortDesc[this.sortDescIndex], this.pageNumber, this.pageSize).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
+      this.urlC.urlResults(this.pageNumber, this.pageSize, !this.sortDesc[this.sortDescIndex], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+        .subscribe(data => {
+          this.bugs = data;
         })
-      })
     }
   }
 }
+

@@ -8,7 +8,7 @@
       </td>
       <td class="form-group">
         <select class="form-control search-input" name="priority" [(ngModel)]="prioritySearch">
-          <option [ngValue]="null"></option>
+          <option></option>
           <option>1</option>
           <option>2</option>
           <option>3</option>
@@ -16,25 +16,25 @@
       </td>
       <td class="form-group">
         <select class="form-control search-input" name="reporter" [(ngModel)]="reporterSearch">
-          <option [ngValue]="null"></option>
+          <option></option>
           <option>QA</option>
           <option>PO</option>
           <option>DEV</option>
         </select>
       </td>
       <td class="form-group">
-        <input class="form-control search-input" name="date" type="datetime-local"  placeholder=" " [(ngModel)]="dateSearch">
+        <!-- <input class="form-control search-input" name="date" type="datetime-local"  placeholder=" " [(ngModel)]="dateSearch"> -->
       </td>
       <td class="form-group">
         <select class="form-control search-input" name="status" [(ngModel)]="statusSearch">
-          <option [ngValue]="null"></option>
+          <option></option>
           <option>Ready for testing</option>
           <option>Done</option>
           <option>Rejected</option>
         </select>
       </td>
-      <td ><button class="btn search-btn" type="submit">Search</button></td>
-      <td></td>
+      <td ><button class="btn search-btn" type="submit" (click)="searchRequest()">Search</button></td>
+      <td ><button class="btn search-btn" type="reset" (click)="clearAndInitialize()">Initialize</button></td>
     </tr>
 
   </thead>

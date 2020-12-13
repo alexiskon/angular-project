@@ -89,10 +89,10 @@ export class BugFormComponent implements OnInit, FormComponent {
     return this.bugForm.get('comments') as FormArray;
   }
 
-  private commentItem(desc?: string, name?: string) {
+  private commentItem(desc?: string, reporter?: string) {
     return this.fb.group({
       description: [desc,Validators.required],
-      name: [name, Validators.required]
+      reporter: [reporter, Validators.required]
     })
   }
 

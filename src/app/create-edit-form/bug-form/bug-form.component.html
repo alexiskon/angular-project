@@ -76,20 +76,21 @@
                 <span class="delete-comment" (click)="removeComment(idx)" data-html="true"
                     title="Delete comment">X</span>
                 <div class="form-group">
-                    <label>Description</label>
+                    <label>Description <span class="invalid" *ngIf="comment.get('description')?.invalid">*</span></label>
                     <input type="text" formControlName="description" class="form-control"
                         placeholder="Comment Description">
                 </div>
-                <div class="invalid" *ngIf="comment.get('description')?.invalid && submitted">This field is required</div>
+                <div class="invalid" *ngIf="comment.get('description')?.invalid && submitted">This field is required
+                </div>
                 <div class="invalid" *ngIf="!(comment.get('description')?.invalid && submitted)"><br></div>
                 <div class="form-group">
-                    <label>Reporter</label>
-                    <input type="text" formControlName="reporter" class="form-control"
-                        placeholder="Name of the reporter">
+                    <label>Name <span class="invalid" *ngIf="comment.get('reporter')?.invalid">*</span></label>
+                    <input type="text" formControlName="reporter" class="form-control" placeholder="Name of the reporter">
                 </div>
-                <div class="invalid" *ngIf="comment.get('description')?.invalid && submitted">This field is required</div>
+                <div class="invalid" *ngIf="comment.get('reporter')?.invalid && submitted">This field is required
+                </div>
                 <div class="invalid" *ngIf="!(comment.get('description')?.invalid && submitted)"><br></div>
-                <button *ngIf="isLast" class="btn btn-dark float-right mt-n1" (click)="addComment()">+</button>
+                <button *ngIf="isLast" class="btn btn-primary float-right mt-n1" (click)="addComment()">+</button>
             </div>
         </div>
     </div>

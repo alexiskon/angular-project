@@ -30,23 +30,6 @@ export class GetDataComponent implements OnInit {
   pageBtnRight = faArrowAltCircleRight;
   pagebtnLeft = faArrowAltCircleLeft;
 
-  //Search properties
-  titleSearch: string = "";
-  prioritySearch: string = "";
-  dateSearch: string = "";
-  reporterSearch: string = "";
-  statusSearch: string = "";
-
-  searchRequest() {
-    this.pageNumber = 0;
-    this.nextPageCheck();
-    this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
-      .subscribe(data => {
-        this.bugs = data;
-      })
-  }
-
-
   // if counter[i] == 0 the icon that shows the 
   // sort direction(asc,desc) is not displayed  
   counters: number[] = [0, 0, 0, 0, 0];
@@ -58,8 +41,8 @@ export class GetDataComponent implements OnInit {
   sortDescIndex: number = 0;//sorted paging help variable
 
 
-  cameFromForm: boolean = false;
-  temp: string = "";
+  cameFromForm: boolean = false;//edited form
+  temp: string = "";//variable to store the id when callin the get-bug-by-id service
 
   //paging variables
   pageNumber: number = 0;
@@ -68,6 +51,8 @@ export class GetDataComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+    this.checkForNextPage = true;
 
     if (!(this.route.snapshot.queryParamMap.get('id') === null)) {
       this.cameFromForm = true;
@@ -95,10 +80,29 @@ export class GetDataComponent implements OnInit {
       })
   }
 
+  //Search properties
+  titleSearch: string = "";
+  prioritySearch: string = "";
+  dateSearch: string = "";
+  reporterSearch: string = "";
+  statusSearch: string = "";
+
+  //searching function
+  searchRequest() {
+    this.pageNumber = 0;
+    this.nextPageCheck();
+    this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+      .subscribe(data => {
+        this.bugs = data;
+      })
+  }
+
+  //sorting function
   getHeader(event: Event): void {
     // We get table header id(e.g. "title") from html 
     this.value = (event.target as Element).id;
     this.pageNumber = 0;
+    this.checkForNextPage = true;
     // According to the id we send a request to the API and we get the sorted
     // data from url?sort=${id},${order} where order is by default ascending
     // for alphabetical values, descending for priority to show the most 
@@ -108,60 +112,52 @@ export class GetDataComponent implements OnInit {
     // of the other tabs are changed back to ascending.
 
     if (this.value == 'title') {
-      this.counters = [1, 0, 0, 0, 0];
-      this.bugs = [];
-      this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[0], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-      this.sortDesc = [!this.sortDesc[0], true, false, true, false];
-    } else if (this.value == 'priority') {
-      this.counters = [0, 1, 0, 0, 0];
-      this.bugs = [];
-      this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[1], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-      this.sortDesc = [false, !this.sortDesc[1], false, true, false];
-
-    } else if (this.value == 'reporter') {
-      this.counters = [0, 0, 1, 0, 0];
-      this.bugs = [];
-      this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[2], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-      this.sortDesc = [false, true, !this.sortDesc[2], true, false];
-
-    } else if (this.value == 'createdAt') {
-      this.counters = [0, 0, 0, 1, 0];
-      this.bugs = [];
-      this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[3], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-      this.sortDesc = [false, true, false, !this.sortDesc[3], false];
-
-    } else if (this.value == 'status') {
-      this.counters = [0, 0, 0, 0, 1];
-      this.bugs = [];
-      this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[4], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
-        data.map((it) => {
-          this.bugs.push(it)
-        })
-      })
-      this.sortDesc = [false, true, false, true, !this.sortDesc[4]];
+      this.headerHandle(this.value, 0);
+    }
+    else if (this.value == 'priority') {
+      this.headerHandle(this.value, 1);
+    }
+    else if (this.value == 'reporter') {
+      this.headerHandle(this.value, 2);
+    }
+    else if (this.value == 'createdAt') {
+      this.headerHandle(this.value, 3);
+    }
+    else if (this.value == 'status') {
+      this.headerHandle(this.value, 4);
     }
   }
+
+  headerHandle(value: string, index: number) {
+    this.bugs = [];
+    this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[index], value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
+      data.map((it) => {
+        this.bugs.push(it)
+      })
+    })
+    for (let i = 0; i < this.counters.length; i++) {
+      if (i == index) {
+        this.counters[i] = 1;
+        this.sortDesc[i] = !this.sortDesc[index];
+      }
+      else if (i % 2 == 0) {
+        this.counters[i] = 0;
+        this.sortDesc[i] = false;
+      }
+      else {
+        this.counters[i] = 0;
+        this.sortDesc[i] = true;
+      }
+    }
+  }
+
+
   //pass data to the route-needs to ActivatedRoute to the navigated path and this.route.snapshot.queryParamMap.get('id') to get the id
   editBug(item: Bugs) {
     this.router.navigate(["bug_reporting_form"], { queryParams: { id: item.id } })
   }
 
+  //delete function
   deleteBug(item: Bugs) {
     this.bugs = []
     this.delBug.deleteBugs(item.id).subscribe()
@@ -177,6 +173,7 @@ export class GetDataComponent implements OnInit {
     })
   }
 
+  //variable for disabling the next button
   checkForNextPage: boolean = true;
 
   prevPage() {

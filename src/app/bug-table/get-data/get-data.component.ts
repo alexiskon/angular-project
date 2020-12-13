@@ -144,7 +144,7 @@ export class GetDataComponent implements OnInit {
 
   headerHandle(value: string, index: number) {
     this.bugs = [];
-    this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[index], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
+    this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[index], value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
       data.map((it) => {
         this.bugs.push(it)
       })

@@ -15,4 +15,4 @@ import { FormsModule } from '@angular/forms';
   ],
   exports: [GetDataComponent]
 })
-export class GetDataModule { }
+export class InitialTableModule { }

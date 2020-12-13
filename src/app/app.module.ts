@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
-import { BugFormModule } from '../app/data-form/bug-form.module'
-import { GetDataModule } from '../app/initial-table/get-data.module'
+import { InitialTableModule } from './initial-table/initial-table.module'
+import { DataFormModule } from '../app/data-form/data-form.module'
 
 @NgModule({
   declarations: [
@@ -13,9 +13,9 @@ import { GetDataModule } from '../app/initial-table/get-data.module'
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BugFormModule,
+    InitialTableModule,
     HttpClientModule,
-    GetDataModule,
+    DataFormModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

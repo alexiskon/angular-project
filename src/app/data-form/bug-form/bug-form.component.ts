@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms"
 import { Bugs } from '../../interfaces/bugs'
 import { PostBugService } from '../../services/post-bug.service'
-import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowAltCircleRight, faHome } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
 import { UpdateBugService } from 'src/app/services/update-bug.service';
@@ -18,11 +18,13 @@ export class BugFormComponent implements OnInit {
   bugForm!: FormGroup;
   submitted: boolean = false;
   btnArrow = faArrowAltCircleRight;
+  homeBtn = faHome;
 
   editButton: boolean = false;
   temp: string = "";
 
-
+  //guard variable
+  validSubmit: boolean = false;
 
   constructor(private fb: FormBuilder, private postService: PostBugService, private router: Router,
     private route: ActivatedRoute, private getBugById: GetBugByIdService, private updateBug: UpdateBugService) { }
@@ -105,6 +107,7 @@ export class BugFormComponent implements OnInit {
       this.submitted = true;
       return;
     } else {
+      this.validSubmit = true;
       let bugCreated: Bugs = this.bugForm.value
       if (this.editButton) {//submited form from edit button
         this.updateBug.updateBugs(this.temp, bugCreated).subscribe(value => {
@@ -119,5 +122,15 @@ export class BugFormComponent implements OnInit {
         });
       }
     }
+  }
+  canDeactivate = () => {
+    if(!this.validSubmit && this.bugForm.dirty){
+      return false;
+    }
+    return true;
+  }
+
+  returnHome () {
+    this.router.navigate([""])
   }
 }

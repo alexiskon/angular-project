@@ -39,6 +39,7 @@ export class GetDataComponent implements OnInit {
 
   searchRequest() {
     this.pageNumber = 0;
+    this.nextPageCheck();
     this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
       .subscribe(data => {
         this.bugs = data;
@@ -185,20 +186,22 @@ export class GetDataComponent implements OnInit {
     this.pageManipulation();
   }
 
-  nextPage() {
-    this.pageNumber++;
-    this.pageManipulation();
-    console.log(this.checkForNextPage)
-    console.log(this.pageNumber + 1)
+  nextPageCheck() {
+    //check if next page has data
     this.urlC.urlResults(this.pageNumber + 1, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
       .subscribe(data => {
-        console.log(data)
         if (data.length === 0) {
           this.checkForNextPage = false;
         } else {
           this.checkForNextPage = true;
         }
       })
+  }
+
+  nextPage() {
+    this.pageNumber++;
+    this.pageManipulation();
+    this.nextPageCheck();
   }
 
   pageManipulation() {

@@ -1,4 +1,4 @@
-<button class="btn btn-outline-dark" [routerLink]="['bug_reporting_form']">Create New</button>
+<button class="btn btn-outline-dark" [routerLink]="['bug_reporting_form']">Create New <fa-icon [icon]="bugIcon"></fa-icon></button>
 <table class=" table table-hover table-borderless">
 
   <thead class="thead-dark">
@@ -71,7 +71,7 @@
       <td class="td-data">{{ item.reporter }}</td>
       <td class="td-data">{{ item.createdAt | date:"dd/MM/yyyy hh:mm:ss" }}</td>
       <td class="td-data">{{ item.status }}</td>
-      <td><button class="btn-dark btn" (click)="editClicked(item)">Edit</button></td>
+      <td><button class="btn-dark btn" (click)="editClicked(item)">Edit <fa-icon [icon]="bugIcon"></fa-icon></button></td>
       <td><button class="btn-danger btn" (click)="deleteBug(item)">Delete</button></td>
     </tr>
   </tbody>

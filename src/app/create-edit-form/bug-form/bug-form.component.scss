@@ -6,25 +6,24 @@
 .bugForm {
     border: 1px solid black;
     padding: 15px;
-    background-color: rgb(227, 246, 252);
+    background-color: rgb(228, 228, 228);
     border-radius: 10px;
 }
-
 .submit-btn {
     width: 250px;
     height: 45px;
     border: none;
     outline: none;
-    box-shadow: -4px 4px 5px 0 #feb361;
-    color: #fff;
+    box-shadow: -4px 4px 5px 0 #727171;
+    color: rgb(255, 255, 255);
     font-size: 14px;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.4);
-    background-color: #fe9a2e;
+    text-shadow: 0 1px rgba(87, 86, 86, 0.4);
+    background-color: #000000;
     border-radius: 3px;
     font-weight: 700;
 }
 .submit-btn:hover {
-    background-color: #ff8000;
+    background-color: #0c0c0c;
     cursor: pointer;
 }
 .submit-btn:active {

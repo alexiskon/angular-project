@@ -105,12 +105,6 @@ export class BugFormComponent implements OnInit {
       return;
     } else {
       let bugCreated: Bugs = this.bugForm.value
-      bugCreated.comments = this.comments.value.map((data: { reporter: any; description: any; }) => {
-        return {
-          reporter: data.reporter,
-          description: data.description
-        }
-      })
       if (this.editButton) {//submited form from edit button
         this.updateBug.updateBugs(this.temp, bugCreated).subscribe(value => {
           console.log(value.id);

@@ -7,8 +7,9 @@
                 <input type="text" formControlName="title" class="form-control" aria-describedby="Title"
                     placeholder="Enter name">
             </div>
-            <span class="invalid" *ngIf="bugForm.controls.title.invalid && submitted">This field is required</span>
             <span class="invalid" *ngIf="!(bugForm.controls.title.invalid && submitted)"><br></span>
+            <span class="invalid" *ngIf="bugForm.controls.title.invalid && submitted">This field is required</span>
+
 
             <div class="form-group">
                 <label class="font-weight-bold">Description <span class="invalid"
@@ -16,8 +17,9 @@
                     formControlName="description" class="form-control" aria-describedby="Description"
                     placeholder="Describe bug here">
             </div>
-            <div class="invalid" *ngIf="bugForm.controls.description.invalid && submitted">This field is required</div>
             <div class="invalid" *ngIf="!(bugForm.controls.description.invalid && submitted)"><br></div>
+            <div class="invalid" *ngIf="bugForm.controls.description.invalid && submitted">This field is required</div>
+            
             <div class="form-row">
                 <div class="form-group col-md-2">
                     <label class="font-weight-bold">Priority <span class="invalid"
@@ -38,6 +40,7 @@
                     </div>
                     <div class="invalid" *ngIf="!(bugForm.controls.priority.invalid && submitted)"><br></div>
                 </div>
+
                 <div class="form-group col-md-5">
                     <label class="font-weight-bold">Reporter <span class="invalid"
                             *ngIf="bugForm.controls.reporter.invalid">*</span></label>
@@ -51,6 +54,7 @@
                     </div>
                     <div class="invalid" *ngIf="!(bugForm.controls.reporter.invalid && submitted)"><br></div>
                 </div>
+
                 <div class="form-group col-md-5">
                     <label class="font-weight-bold">Status <span class="invalid"
                             *ngIf="bugForm.controls.status.invalid">*</span></label>

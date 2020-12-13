@@ -7,7 +7,7 @@ import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight, faSortAlphaDown } 
 import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
 import { DeleteBugService } from 'src/app/services/delete-bug.service';
-import { UrlConstructor } from 'src/app/services/url-constructor';
+import { UrlConstructor } from 'src/app/services/url-constructor.service';
 import { identifierModuleUrl } from '@angular/compiler';
 
 

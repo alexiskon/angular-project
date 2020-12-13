@@ -6,7 +6,6 @@ import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
 import { UpdateBugService } from 'src/app/services/update-bug.service';
-import { Comment } from '@angular/compiler';
 import { Comments } from 'src/app/interfaces/comments';
 
 @Component({
@@ -28,16 +27,19 @@ export class BugFormComponent implements OnInit {
   constructor(private fb: FormBuilder, private postService: PostBugService, private router: Router,
     private route: ActivatedRoute, private getBugById: GetBugByIdService, private updateBug: UpdateBugService) { }
 
+  //<---------form array builder------------------>
   get comments() {
     return this.bugForm.get("comments") as FormArray;
   }
-
   private commentItem(desc?: string, name?: string) {
     return this.fb.group({
       description: [desc, Validators.required],
       reporter: [name, Validators.required]
     })
   }
+  //<-----------end of formarray builder----------->
+
+
 
   addComment() {
     this.comments.push(this.commentItem())
@@ -46,7 +48,6 @@ export class BugFormComponent implements OnInit {
   removeComment(index: number) {
     this.comments.removeAt(index);
   }
-
   ngOnInit(): void {
 
     this.bugForm = this.fb.group({

@@ -78,5 +78,5 @@
 </table>
 <div class="text-center">
   <fa-icon class="page-btn" *ngIf="pageNumber>0" [icon]="pageBtnLeft" (click)="previousPage()"></fa-icon>
-  <fa-icon class="page-btn" *ngIf="bugs.length >=10" [icon]="pageBtnRight" (click)="nextPage()"></fa-icon>
+  <fa-icon class="page-btn" *ngIf="bugs.length != 0" [icon]="pageBtnRight" (click)="nextPage()"></fa-icon>
 </div>

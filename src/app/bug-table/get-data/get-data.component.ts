@@ -82,6 +82,7 @@ export class GetDataComponent implements OnInit {
 
   searchRequest() {
     this.pageNumber = 0;
+    this.nextPageCheck();
     this.clearParams();
     this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
       .subscribe(data => {
@@ -97,6 +98,7 @@ export class GetDataComponent implements OnInit {
   pageSize: number = 10;
   value: string = "";
   sortDescIndex: number = -1;
+  checkForNextPage: boolean = true;
   // sortDesc[i] is true when the i-th header is sorted descendingly
   // [0:title, 1:priority, 2:reporter, 3:createdAt, 4:status]
   sortDesc: boolean[] = [false, true, false, true, false];
@@ -113,6 +115,7 @@ export class GetDataComponent implements OnInit {
     this.value = (event.target as Element).id;
     this.cameFromForm = false;
     this.pageNumber = 0;
+    this.checkForNextPage = true;
     this.clearParams();
     // According to the id we send a request to the API and we get the sorted
     // data from url?sort=${id},${order} where order is by default ascending
@@ -181,17 +184,33 @@ export class GetDataComponent implements OnInit {
     });
   }
 
-  nextPage() {
-    this.pageNumber++;
-    this.pageManipulation(this.pageNumber)
-  }
 
   previousPage() {
+    //prevent assigning negative page number
     this.pageNumber--;
-    this.pageManipulation(this.pageNumber)
+    this.checkForNextPage = true;
+    this.pageManipulation();
   }
 
-  pageManipulation(pageNum: number) {
+  nextPage() {
+    this.pageNumber++;
+    this.pageManipulation();
+    this.nextPageCheck();
+  }
+
+  nextPageCheck() {
+    //check if next page has data
+    this.urlC.urlResults(this.pageNumber + 1, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+      .subscribe(data => {
+        if (data.length === 0) {
+          this.checkForNextPage = false;
+        } else {
+          this.checkForNextPage = true;
+        }
+      })
+  }
+
+  pageManipulation() {
     this.bugs = [];
     this.cameFromForm = false;
     if (this.value === "") {
@@ -199,8 +218,7 @@ export class GetDataComponent implements OnInit {
         .subscribe(data => {
           this.bugs = data;
         })
-    }
-    else {
+    } else {
       //find the sortDesc boolean variable
       for (let i = 0; i < this.counters.length; i++) {
         if (this.counters[i] != 0) {
@@ -213,5 +231,5 @@ export class GetDataComponent implements OnInit {
         })
     }
   }
-}
 
+}

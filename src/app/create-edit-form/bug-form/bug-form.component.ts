@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowAltCircleRight,faHome } from '@fortawesome/free-solid-svg-icons';
 import { Bugs } from 'src/app/interfaces/bugs';
+import { FormComponent } from 'src/app/interfaces/form-component';
 import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
 import { PostBugService } from 'src/app/services/post-bug.service';
 import { PutBugService } from 'src/app/services/put-bug.service';
@@ -13,38 +14,18 @@ import { Comments } from '../../interfaces/comments';
   templateUrl: './bug-form.component.html',
   styleUrls: ['./bug-form.component.scss']
 })
-export class BugFormComponent implements OnInit {
+export class BugFormComponent implements OnInit, FormComponent {
   bugForm!: FormGroup;
+  validSubmit: boolean = false;
   submitted: boolean = false;
   editClicked: boolean = false;
   temp: string = "";
 
-
+  homeBtn = faHome;
   btnArrow = faArrowAltCircleRight;
 
   constructor(private fb: FormBuilder, private postService: PostBugService, private router: Router,
     private route: ActivatedRoute, private getBugById: GetBugByIdService, private putBugService: PutBugService) { }
-
-  get comments() {
-    return this.bugForm.get('comments') as FormArray;
-  }
-
-
-
-  private commentItem(desc?: string, name?: string) {
-    return this.fb.group({
-      description: [desc],
-      name: [name]
-    })
-  }
-
-  addComment() {
-    this.comments.push(this.commentItem())
-  }
-
-  removeComment(index: number) {
-    this.comments.removeAt(index);
-  }
 
   ngOnInit(): void {
     this.bugForm = this.fb.group({
@@ -95,12 +76,39 @@ export class BugFormComponent implements OnInit {
 
       });
   }
+  canDeactivate = () => {
+    if(!this.validSubmit && this.bugForm.dirty){
+      console.log(this.validSubmit, this.bugForm.dirty)
+      return false;
+    }
+    return true;
+  }
+
+  get comments() {
+    return this.bugForm.get('comments') as FormArray;
+  }
+
+  private commentItem(desc?: string, name?: string) {
+    return this.fb.group({
+      description: [desc],
+      name: [name]
+    })
+  }
+
+  addComment() {
+    this.comments.push(this.commentItem())
+  }
+
+  removeComment(index: number) {
+    this.comments.removeAt(index);
+  }
 
   submitForm() {
+    this.submitted = true;
     if (this.bugForm.invalid) {
-      this.submitted = true;
       return;
     } else {
+      this.validSubmit = true
       if (!this.editClicked) {
         let bugCreated: Bugs = this.bugForm.value
         this.postService.postBugs(bugCreated).subscribe(value => {
@@ -114,6 +122,10 @@ export class BugFormComponent implements OnInit {
         });
       }
     }
+  }
+  returnHome(){
+    console.log("true")
+    this.router.navigate(['']);
 
   }
 }

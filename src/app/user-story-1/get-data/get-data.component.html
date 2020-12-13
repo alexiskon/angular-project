@@ -7,13 +7,13 @@
     <tr class="header-row">
       <td class="form-group"><input class="form-control search-input" name="title" [(ngModel)]="titleSearch"></td>
       <td class="form-group"><select class="form-control search-input" name="priority" [(ngModel)]="prioritySearch">
-          <option [ngValue]="null"></option>
+          <option></option>
           <option>1</option>
           <option>2</option>
           <option>3</option>
         </select></td>
       <td class="form-group"><select class="form-control search-input" name="reporter" [(ngModel)]="reporterSearch">
-          <option [ngValue]="null"></option>
+          <option></option>
           <option>QA</option>
           <option>PO</option>
           <option>DEV</option>
@@ -21,7 +21,7 @@
       <td class="form-group"><input class="form-control search-input" name="date" type="datetime-local" placeholder=" "
           [(ngModel)]="dateSearch"></td>
       <td class="form-group"><select class="form-control search-input" name="status" [(ngModel)]="statusSearch">
-          <option [ngValue]="null"></option>
+          <option></option>
           <option>Ready for testing</option>
           <option>Done</option>
           <option>Rejected</option>
@@ -79,6 +79,6 @@
   <fa-icon *ngIf="pageNumber>0" [icon]="pagebtnLeft" class="page-btn" (click)="prevPage()"></fa-icon>
 
 
-  <fa-icon [icon]="pageBtnRight" class="page-btn" (click)="nextPage()"></fa-icon>
+  <fa-icon *ngIf="checkForNextPage" [icon]="pageBtnRight" class="page-btn" (click)="nextPage()"></fa-icon>
 
 </div>

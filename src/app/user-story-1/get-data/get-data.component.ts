@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
 import { DeleteBugService } from 'src/app/services/delete-bug.service';
 import { UrlConstructor } from 'src/app/services/url-constructor';
+import { identifierModuleUrl } from '@angular/compiler';
 
 
 @Component({
@@ -37,6 +38,7 @@ export class GetDataComponent implements OnInit {
   statusSearch: string = "";
 
   searchRequest() {
+    this.pageNumber = 0;
     this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
       .subscribe(data => {
         this.bugs = data;
@@ -79,21 +81,18 @@ export class GetDataComponent implements OnInit {
         this.bugs.push(data);
       })
     }
-
+    //starting screen bugs table
     this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
-    .subscribe((data) => {
-      data.map((it) => {
-        this.bugs.push(it)        
+      .subscribe((data) => {
+        data.map((it) => {
+          if (it.id === this.temp) {
+            return;
+          } else {
+            this.bugs.push(it)
+          }
+        })
       })
-    })
   }
-
-  // clearParams() {
-  //   this.router.navigate(
-  //     ['.'],
-  //     { relativeTo: this.route }
-  //   )
-  //   }
 
   getHeader(event: Event): void {
     // We get table header id(e.g. "title") from html 
@@ -167,7 +166,7 @@ export class GetDataComponent implements OnInit {
     this.delBug.deleteBugs(item.id).subscribe()
     this.counters = [0, 0, 0, 0, 0];
     this.sortDesc = [false, true, false, true, false];
-    this.urlC.urlResults(this.pageNumber, this.pageSize).subscribe((data) => {
+    this.urlC.urlResults(this.pageNumber, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
       data.map((it) => {
         if (item.id === it.id) {
           return;
@@ -176,16 +175,32 @@ export class GetDataComponent implements OnInit {
       })
     })
   }
+
+  checkForNextPage: boolean = true;
+
   prevPage() {
     //prevent assigning negative page number
     this.pageNumber--;
+    this.checkForNextPage = true;
     this.pageManipulation();
   }
+
   nextPage() {
     this.pageNumber++;
     this.pageManipulation();
-    
+    console.log(this.checkForNextPage)
+    console.log(this.pageNumber + 1)
+    this.urlC.urlResults(this.pageNumber + 1, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+      .subscribe(data => {
+        console.log(data)
+        if (data.length === 0) {
+          this.checkForNextPage = false;
+        } else {
+          this.checkForNextPage = true;
+        }
+      })
   }
+
   pageManipulation() {
     this.bugs = [];
     this.cameFromForm = false;
@@ -202,9 +217,9 @@ export class GetDataComponent implements OnInit {
         }
       }
       this.urlC.urlResults(this.pageNumber, this.pageSize, !this.sortDesc[this.sortDescIndex], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
-      .subscribe(data => {
-        this.bugs = data;
-      })
+        .subscribe(data => {
+          this.bugs = data;
+        })
     }
   }
 

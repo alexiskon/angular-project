@@ -12,4 +12,4 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   ],
   exports: [BugFormComponent]
 })
-export class UserStory2Module { }
+export class BugFormModule { }

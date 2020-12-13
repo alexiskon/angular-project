@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { GetDataComponent } from './user-story-1/get-data/get-data.component';
-import { BugFormComponent } from './user-story-2/bug-form/bug-form.component';
+import { GetDataComponent } from './initial-table/get-data/get-data.component';
+import { BugFormComponent } from './data-form/bug-form/bug-form.component';
 
 const routes: Routes = [
   {

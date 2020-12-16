@@ -1,8 +1,29 @@
+// img {
+//   transform: rotate(90deg);
+//   // display: block;
+//   // margin-left: auto;
+//   // margin-right: auto;
+//   // width: 80%;
+//   height: 150px;
+//   // margin-top: 50%;
+// }
 img {
-    margin-top: 0px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
-    height:250px;
-  }
+  width: 150px;
+  // margin: 50%;
+  text-align: center;
+  margin-top: 300px;
+}
+
+
+#up {
+  transform: rotate(90deg);
+}
+
+#down {
+  transform: rotate(270deg);
+}
+
+.row {
+  transform: scale(0.8);
+}
+

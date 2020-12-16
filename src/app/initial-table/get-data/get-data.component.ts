@@ -3,12 +3,11 @@ import { Bugs } from '../../interfaces/bugs'
 import { faSortNumericDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
-import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight, faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
+import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight, faSortAlphaDown, faBug } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
 import { DeleteBugService } from 'src/app/services/delete-bug.service';
 import { UrlConstructor } from 'src/app/services/url-constructor.service';
-import { identifierModuleUrl } from '@angular/compiler';
 
 
 @Component({
@@ -29,6 +28,7 @@ export class GetDataComponent implements OnInit {
   sortDateIcon = faSort;
   pageBtnRight = faArrowAltCircleRight;
   pagebtnLeft = faArrowAltCircleLeft;
+  bugIcon = faBug;
 
   // if counter[i] == 0 the icon that shows the 
   // sort direction(asc,desc) is not displayed  
@@ -81,11 +81,21 @@ export class GetDataComponent implements OnInit {
   }
 
   //Search properties
+
   titleSearch: string = "";
   prioritySearch: string = "";
-  dateSearch: string = "";
   reporterSearch: string = "";
   statusSearch: string = "";
+
+  Initialize() {
+    this.titleSearch = "";
+    this.prioritySearch = "";
+    this.reporterSearch = "";
+    this.statusSearch = "";
+    this.searchRequest();
+    this.counters = [0, 0, 0, 0, 0];
+    this.sortDesc = [false, true, false, true, false];
+  }
 
   //searching function
   searchRequest() {
@@ -181,6 +191,7 @@ export class GetDataComponent implements OnInit {
     this.pageNumber--;
     this.checkForNextPage = true;
     this.pageManipulation();
+    console.log(this.pageNumber)
   }
 
   nextPageCheck() {
@@ -199,6 +210,8 @@ export class GetDataComponent implements OnInit {
     this.pageNumber++;
     this.pageManipulation();
     this.nextPageCheck();
+    console.log(this.pageNumber)
+
   }
 
   pageManipulation() {

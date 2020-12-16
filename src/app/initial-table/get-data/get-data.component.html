@@ -1,38 +1,43 @@
-<button class="btn btn-dark" [routerLink]="['bug_reporting_form']">Create New</button>
-
-<table class="table table-hover">
-
-
-  <thead class="thead-dark">
+<button class="btn btn-outline-dark" [routerLink]="['bug_reporting_form']">Create New <fa-icon [icon]="bugIcon">
+  </fa-icon></button>
+<table class=" table table-hover table-borderless">
+  <thead class="thead-dark" id="search-bar">
     <tr class="header-row">
-      <td class="form-group"><input class="form-control search-input" name="title" [(ngModel)]="titleSearch"></td>
-      <td class="form-group"><select class="form-control search-input" name="priority" [(ngModel)]="prioritySearch">
+      <td class="form-group">
+        <input class="form-control search-input" name="title" [(ngModel)]="titleSearch">
+      </td>
+      <td class="form-group">
+        <select class="form-control search-input" name="priority" [(ngModel)]="prioritySearch">
           <option></option>
           <option>1</option>
           <option>2</option>
           <option>3</option>
-        </select></td>
-      <td class="form-group"><select class="form-control search-input" name="reporter" [(ngModel)]="reporterSearch">
+        </select>
+      </td>
+      <td class="form-group">
+        <select class="form-control search-input" name="reporter" [(ngModel)]="reporterSearch">
           <option></option>
           <option>QA</option>
           <option>PO</option>
           <option>DEV</option>
-        </select></td>
-      <td class="form-group"><input class="form-control search-input" name="date" type="datetime-local" placeholder=" "
-          [(ngModel)]="dateSearch"></td>
-      <td class="form-group"><select class="form-control search-input" name="status" [(ngModel)]="statusSearch">
+        </select>
+      </td>
+      <td class="form-group">
+        <!-- <input class="form-control search-input" name="date" type="datetime-local"  placeholder=" " [(ngModel)]="dateSearch"> -->
+      </td>
+      <td class="form-group">
+        <select class="form-control search-input" name="status" [(ngModel)]="statusSearch">
           <option></option>
           <option>Ready for testing</option>
           <option>Done</option>
           <option>Rejected</option>
-        </select></td>
+        </select>
+      </td>
       <td><button class="btn search-btn" type="submit" (click)="searchRequest()">Search</button></td>
-      <td></td>
+      <td><button class="btn search-btn" type="reset" (click)="Initialize()">Initialize</button></td>
     </tr>
+
   </thead>
-
-
-
 
   <thead class="thead-dark">
     <tr class="header-row">
@@ -57,28 +62,22 @@
       </th>
       <th></th>
       <th></th>
-
     </tr>
   </thead>
 
   <tbody>
-    <tr *ngFor="let item of bugs">
+    <tr *ngFor="let item of bugs" [class.highlight-first]="cameFromForm">
       <td class="td-data">{{ item.title }}</td>
       <td class="td-data">{{ item.priority }}</td>
       <td class="td-data">{{ item.reporter }}</td>
-      <td class="td-data">{{ item.createdAt | date: "dd/MM/yyyy hh:mm:ss" }}</td>
+      <td class="td-data">{{ item.createdAt | date:"dd/MM/yyyy hh:mm:ss" }}</td>
       <td class="td-data">{{ item.status }}</td>
-      <td><button class="btn btn-dark" type="submit" (click)="editBug(item)">Edit</button></td>
-      <td><button class="btn btn-dark" style="background-color: red;" type="submit"
-          (click)="deleteBug(item)">Delete</button></td>
+      <td><button class="btn-dark btn" (click)="editBug(item)">Edit <fa-icon [icon]="bugIcon"></fa-icon></button></td>
+      <td><button class="btn-danger btn" (click)="deleteBug(item)">Delete</button></td>
     </tr>
   </tbody>
 </table>
-
-<div class="text-center" id="pagingBtns">
-  <fa-icon *ngIf="pageNumber>0" [icon]="pagebtnLeft" class="page-btn" (click)="prevPage()"></fa-icon>
-
-
-  <fa-icon *ngIf="checkForNextPage" [icon]="pageBtnRight" class="page-btn" (click)="nextPage()"></fa-icon>
-
+<div class="text-center">
+  <fa-icon class="page-btn" *ngIf="pageNumber>0" [icon]="pagebtnLeft" (click)="prevPage()"></fa-icon>
+  <fa-icon class="page-btn" *ngIf="checkForNextPage" [icon]="pageBtnRight" (click)="nextPage()"></fa-icon>
 </div>

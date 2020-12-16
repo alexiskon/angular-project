@@ -1,8 +1,21 @@
 img {
-    margin-top: 0px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 30%;
-    height:135px;
-  }
+  margin-top: 0px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 25%;
+  height:128px;
+}
+
+#page-container {
+  position: relative;
+  padding-bottom: 300px;
+
+
+  min-height: 100vh;
+}
+
+#content-container {
+  min-height: calc(100vh - 428px);
+  padding-bottom: 10rem; /* Footer height */
+}

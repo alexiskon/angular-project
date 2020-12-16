@@ -3,10 +3,10 @@
 
   <thead class="thead-dark">
     <tr class="header-row">
-      <td class="form-group">
+      <td class="form-group" class="search-bar">
         <input class="form-control search-input" name="title" [(ngModel)]="titleSearch">
       </td>
-      <td class="form-group">
+      <td class="form-group" class="search-bar">
         <select class="form-control search-input" name="priority" [(ngModel)]="prioritySearch">
           <option></option>
           <option>1</option>
@@ -14,7 +14,7 @@
           <option>3</option>
         </select>
       </td>
-      <td class="form-group">
+      <td class="form-group" class="search-bar">
         <select class="form-control search-input" name="reporter" [(ngModel)]="reporterSearch">
           <option></option>
           <option>QA</option>
@@ -22,10 +22,10 @@
           <option>DEV</option>
         </select>
       </td>
-      <td class="form-group">
+      <td class="form-group" class="search-bar">
         <!-- <input class="form-control search-input" name="date" type="datetime-local"  placeholder=" " [(ngModel)]="dateSearch"> -->
       </td>
-      <td class="form-group">
+      <td class="form-group" class="search-bar">
         <select class="form-control search-input" name="status" [(ngModel)]="statusSearch">
           <option></option>
           <option>Ready for testing</option>
@@ -33,8 +33,8 @@
           <option>Rejected</option>
         </select>
       </td>
-      <td ><button class="btn search-btn" type="submit" (click)="searchRequest()">Search</button></td>
-      <td ><button class="btn search-btn" type="reset" (click)="clearAndInitialize()">Initialize</button></td>
+      <td  class="search-bar"><button class="btn search-btn" type="submit" (click)="searchRequest()">Search</button></td>
+      <td  class="search-bar"><button class="btn search-btn" type="reset" (click)="clearAndInitialize()">Initialize</button></td>
     </tr>
 
   </thead>

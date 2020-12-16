@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { BugTableModule } from './bug-table/bug-table.module';
 import { HttpClientModule } from '@angular/common/http';
 import { CreateEditFormModule } from './create-edit-form/create-edit-form.module';
+import { FooterModule } from './footer/footer.module';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { CreateEditFormModule } from './create-edit-form/create-edit-form.module
     BugTableModule,
     HttpClientModule,
     CreateEditFormModule,
+    FooterModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

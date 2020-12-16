@@ -10,12 +10,10 @@ img {
 #page-container {
   position: relative;
   padding-bottom: 300px;
-
-
   min-height: 100vh;
 }
 
 #content-container {
   min-height: calc(100vh - 428px);
-  padding-bottom: 10rem; /* Footer height */
+  padding-bottom: 10rem; 
 }

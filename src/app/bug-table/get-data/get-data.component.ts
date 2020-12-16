@@ -78,7 +78,10 @@ export class GetDataComponent implements OnInit {
     this.dateSearch = "";
     this.reporterSearch = "";
     this.statusSearch = "";
+    this.counters = [0, 0, 0, 0, 0];
+    this.sortDesc = [false, true, false, true, false];
     this.searchRequest();
+
   }
 
   searchRequest() {

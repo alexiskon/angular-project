@@ -28,14 +28,7 @@ export class BugFormComponent implements OnInit, FormComponent {
     private route: ActivatedRoute, private getBugById: GetBugByIdService, private putBugService: PutBugService) { }
 
   ngOnInit(): void {
-    this.bugForm = this.fb.group({
-      title: [null, Validators.required],
-      description: [null, Validators.required],
-      priority: [null, Validators.required],
-      reporter: [null, Validators.required],
-      status: [],
-      comments: this.fb.array([])
-    });
+    this.initializeForm(null, null, null, null, null)
 
     let commentValues: Comments[] = [];
     if (!(this.route.snapshot.queryParamMap.get('id') == null)) {
@@ -47,34 +40,38 @@ export class BugFormComponent implements OnInit, FormComponent {
     if (this.editClicked) {
       this.getBugById.getBugById(this.temp).subscribe(it => {
         commentValues = it.comments;
-        this.bugForm = this.fb.group({
-          title: [it.title, Validators.required],
-          description: [it.description, Validators.required],
-          priority: [it.priority.toString(), Validators.required],
-          reporter: [it.reporter, Validators.required],
-          status: [it.status],
-          comments: this.fb.array([])
-        });
+        this.initializeForm(it.title, it.description, it.priority.toString(), it.reporter, it.status);
         if (commentValues) {
           commentValues.forEach(comment => {
-            // console.log("YES")
             this.comments.push(this.commentItem(comment.description, comment.reporter));
           });
         }
       })
     }
+  }
+
+  initializeForm(title: any, desc: any, priority: any, reporter: any, status: any){
+    this.bugForm = this.fb.group({
+      title: [title, Validators.required],
+      description: [desc, Validators.required],
+      priority: [priority, Validators.required],
+      reporter: [reporter, Validators.required],
+      status: [status],
+      comments: this.fb.array([])
+    });
     this.bugForm.controls.reporter.valueChanges.subscribe
-      (value => {
-        const statusFormControl = this.bugForm.controls.status;
+    (value => {
+      const statusFormControl = this.bugForm.controls.status;
 
-        if (value === 'QA') {
-          statusFormControl.setValidators(Validators.required);
-        } else {
-          statusFormControl.clearValidators();
-        }
-        statusFormControl.updateValueAndValidity()
+      if (value === 'QA') {
+        statusFormControl.setValidators(Validators.required);
+      } else {
+        statusFormControl.clearValidators();
+      }
+      statusFormControl.updateValueAndValidity()
 
-      });
+    });
+
   }
   canDeactivate = () => {
     if(!this.validSubmit && this.bugForm.dirty){

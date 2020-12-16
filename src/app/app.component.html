@@ -1,7 +1,19 @@
-<div id="page-container" >
-    <div class="container" id="content-container">
-        <img src="../assets/bug.png">
-        <router-outlet></router-outlet>
+<div id="page-container">
+    <meta name="viewport" content="width=device-width">
+    <div class="row mt-4 w-100">
+        <div class="col-1">
+            <img src="../assets/bug.png" id="up">
+        </div>
+        <div class="col-10">
+            <div class="container">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+        <div class="col-1">
+            <img src="../assets/bug.png" id="down">
+        </div>
     </div>
     <codehub-footer></codehub-footer>
+    
 </div>
+

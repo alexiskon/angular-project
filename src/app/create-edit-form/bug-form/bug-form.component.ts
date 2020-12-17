@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faArrowAltCircleRight,faHome } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
 import { Bugs } from 'src/app/interfaces/bugs';
 import { FormComponent } from 'src/app/interfaces/form-component';
 import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
@@ -14,7 +15,10 @@ import { Comments } from '../../interfaces/comments';
   templateUrl: './bug-form.component.html',
   styleUrls: ['./bug-form.component.scss']
 })
-export class BugFormComponent implements OnInit, FormComponent {
+export class BugFormComponent implements OnInit, FormComponent, OnDestroy {
+
+  subs: Subscription = new Subscription();
+
   bugForm!: FormGroup;
   validSubmit: boolean = false;
   submitted: boolean = false;
@@ -26,6 +30,7 @@ export class BugFormComponent implements OnInit, FormComponent {
 
   constructor(private fb: FormBuilder, private postService: PostBugService, private router: Router,
     private route: ActivatedRoute, private getBugById: GetBugByIdService, private putBugService: PutBugService) { }
+  
 
   ngOnInit(): void {
     this.initializeForm(null, null, null, null, null)
@@ -33,12 +38,12 @@ export class BugFormComponent implements OnInit, FormComponent {
     let commentValues: Comments[] = [];
     if (!(this.route.snapshot.queryParamMap.get('id') == null)) {
       this.editClicked = true;
-      this.route.queryParams.subscribe(p => {
+      this.subs.add(this.route.queryParams.subscribe(p => {
         this.temp = p.id;
-      })
+      }))
     }
     if (this.editClicked) {
-      this.getBugById.getBugById(this.temp).subscribe(it => {
+      this.subs.add(this.getBugById.getBugById(this.temp).subscribe(it => {
         commentValues = it.comments;
         this.initializeForm(it.title, it.description, it.priority.toString(), it.reporter, it.status);
         if (commentValues) {
@@ -46,7 +51,7 @@ export class BugFormComponent implements OnInit, FormComponent {
             this.comments.push(this.commentItem(comment.description, comment.reporter));
           });
         }
-      })
+      }))
     }
   }
 
@@ -109,21 +114,28 @@ export class BugFormComponent implements OnInit, FormComponent {
       this.validSubmit = true
       if (!this.editClicked) {
         let bugCreated: Bugs = this.bugForm.value
-        this.postService.postBugs(bugCreated).subscribe(value => {
+        this.subs.add(this.postService.postBugs(bugCreated).subscribe(value => {
           this.router.navigate([''], { queryParams: { id: value.id } });
-        });
+        }));
       }
       else {
         let bugCreated: Bugs = this.bugForm.value
-        this.putBugService.putBugs(this.temp, bugCreated).subscribe(value => {
+        this.subs.add(this.putBugService.putBugs(this.temp, bugCreated).subscribe(value => {
           this.router.navigate([''], { queryParams: { id: value.id } });
-        });
+        }));
       }
     }
   }
   returnHome(){
     console.log("true")
     this.router.navigate(['']);
+
+  }
+
+  ngOnDestroy(): void {
+    console.log(this.subs)
+    this.subs.unsubscribe();
+    console.log(this.subs)
 
   }
 }

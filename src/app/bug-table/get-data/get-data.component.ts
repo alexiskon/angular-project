@@ -1,16 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Bugs } from '../../interfaces/bugs'
-import { Ust1Service } from '../../services/ust1.service';
 import { faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
 import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight,faBug } from '@fortawesome/free-solid-svg-icons';
-import { GetSortedDataService } from 'src/app/services/get-sorted-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
 import { DeleteBugService } from 'src/app/services/delete-bug.service';
 import { UrlConstructorService } from 'src/app/services/url-constructor.service';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -18,12 +17,12 @@ import { UrlConstructorService } from 'src/app/services/url-constructor.service'
   templateUrl: './get-data.component.html',
   styleUrls: ['./get-data.component.scss']
 })
-export class GetDataComponent implements OnInit {
+export class GetDataComponent implements OnInit, OnDestroy {
 
-  constructor(private ust1: Ust1Service, private getSortedService: GetSortedDataService,
-    private route: ActivatedRoute, private getBugById: GetBugByIdService, private router: Router,
+  constructor(private route: ActivatedRoute, private getBugById: GetBugByIdService, private router: Router,
     private delBug: DeleteBugService, private urlC: UrlConstructorService) { }
-
+  
+  subs: Subscription = new Subscription();
   ngOnInit(): void {
     let temp: string = "";
     // If queryParams contain an id then first display in the table 
@@ -35,11 +34,11 @@ export class GetDataComponent implements OnInit {
       })
     }
     if (this.cameFromForm) {
-      this.getBugById.getBugById(temp).subscribe(data => {
+      this.subs.add(this.getBugById.getBugById(temp).subscribe(data => {
         this.bugs.push(data)
-      })
+      }))
     }
-    this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+    this.subs.add(this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
       .subscribe((data) => {
         data.map((it) => {
           if (it.id == temp) {
@@ -50,7 +49,7 @@ export class GetDataComponent implements OnInit {
             this.bugs.push(it)
           }
         })
-      })
+      }))
   }
 
 
@@ -88,10 +87,10 @@ export class GetDataComponent implements OnInit {
     this.pageNumber = 0;
     this.nextPageCheck();
     this.clearParams();
-    this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+    this.subs.add(this.urlC.urlResults(this.pageNumber, this.pageSize, false, "", this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
       .subscribe(data => {
         this.bugs = data;
-      })
+      }))
   }
 
   counters: number[] = [0, 0, 0, 0, 0];
@@ -148,11 +147,11 @@ export class GetDataComponent implements OnInit {
 
   headerHandle(value: string, index: number) {
     this.bugs = [];
-    this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[index], value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
+    this.subs.add(this.urlC.urlResults(this.pageNumber, this.pageSize, this.sortDesc[index], value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
       data.map((it) => {
         this.bugs.push(it)
       })
-    })
+    }))
     for (let i = 0; i < this.counters.length; i++) {
       if (i == index) {
         this.counters[i] = 1;
@@ -178,14 +177,14 @@ export class GetDataComponent implements OnInit {
     this.cameFromForm = false;
     this.sortDesc = [false, true, false, true, false];
     this.counters = [0, 0, 0, 0, 0];
-    this.urlC.urlResults(this.pageNumber, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
+    this.subs.add(this.urlC.urlResults(this.pageNumber, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch).subscribe((data) => {
       data.map((it) => {
         if (item.id === it.id) {
           return;
         }
         this.bugs.push(it)
       })
-    });
+    }));
   }
 
 
@@ -204,24 +203,24 @@ export class GetDataComponent implements OnInit {
 
   nextPageCheck() {
     //check if next page has data
-    this.urlC.urlResults(this.pageNumber + 1, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+    this.subs.add(this.urlC.urlResults(this.pageNumber + 1, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
       .subscribe(data => {
         if (data.length === 0) {
           this.checkForNextPage = false;
         } else {
           this.checkForNextPage = true;
         }
-      })
+      }))
   }
 
   pageManipulation() {
     this.bugs = [];
     this.cameFromForm = false;
     if (this.value === "") {
-      this.urlC.urlResults(this.pageNumber, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+      this.subs.add(this.urlC.urlResults(this.pageNumber, this.pageSize, false, this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
         .subscribe(data => {
           this.bugs = data;
-        })
+        }))
     } else {
       //find the sortDesc boolean variable
       for (let i = 0; i < this.counters.length; i++) {
@@ -229,11 +228,18 @@ export class GetDataComponent implements OnInit {
           this.sortDescIndex = i;
         }
       }
-      this.urlC.urlResults(this.pageNumber, this.pageSize, !this.sortDesc[this.sortDescIndex], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
+      this.subs.add(this.urlC.urlResults(this.pageNumber, this.pageSize, !this.sortDesc[this.sortDescIndex], this.value, this.titleSearch, this.prioritySearch, this.reporterSearch, this.statusSearch)
         .subscribe(data => {
           this.bugs = data;
-        })
+        }))
     }
   }
+  ngOnDestroy(): void {
+    console.log(this.subs)
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
+    console.log(this.subs)
 
+  }
 }

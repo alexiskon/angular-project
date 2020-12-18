@@ -6,6 +6,7 @@ import { BugTableModule } from './bug-table/bug-table.module';
 import { HttpClientModule } from '@angular/common/http';
 import { CreateEditFormModule } from './create-edit-form/create-edit-form.module';
 import { FooterModule } from './footer/footer.module';
+import { NotFoundPageModule } from './not-found-page/not-found-page.module';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { FooterModule } from './footer/footer.module';
     HttpClientModule,
     CreateEditFormModule,
     FooterModule,
+    NotFoundPageModule
   ],
   providers: [],
   bootstrap: [AppComponent]

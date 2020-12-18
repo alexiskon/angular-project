@@ -4,7 +4,7 @@ import { faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericDown } from '@fortawesome/free-solid-svg-icons';
 import { faSortAlphaUp } from '@fortawesome/free-solid-svg-icons';
 import { faSortNumericUp } from '@fortawesome/free-solid-svg-icons';
-import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight,faBug } from '@fortawesome/free-solid-svg-icons';
+import { faSort, faArrowAltCircleLeft, faArrowAltCircleRight,faBug, faSearch} from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GetBugByIdService } from 'src/app/services/get-bug-by-id.service';
 import { DeleteBugService } from 'src/app/services/delete-bug.service';
@@ -62,6 +62,7 @@ export class GetDataComponent implements OnInit, OnDestroy {
   sortNumberUpIcon = faSortNumericUp;
   sortDateIcon = faSort;
   bugIcon = faBug;
+  searchIcon = faSearch;
 
   // if counter[i] == 0 the icon that shows the 
   // sort direction(asc,desc) is not displayed  

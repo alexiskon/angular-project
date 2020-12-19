@@ -21,27 +21,27 @@ describe('BugFormComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  fit('should create', () => {
     expect(component).toBeTruthy();
   });
   //9-a
-  it('form should be invalid if there are no input data', () => {
+  fit('form should be invalid if there are no input data', () => {
     component.initializeForm(null, null, null, null, null);
     expect(component.bugForm.invalid).toBeTruthy();
   })
   //9-b
-  it('the form should be valid by having the minimum required fields', () => {
+  fit('the form should be valid by having the minimum required fields', () => {
     component.initializeForm('title', 'description', '1', 'PO', null)
     expect(component.bugForm.valid).toBeTruthy();
   })
   //9-c
-  it('form should be invalid if reporter is QA', () => {
+  fit('form should be invalid if reporter is QA', () => {
     component.initializeForm('title', 'description', '1', "QA", null)
     fixture.detectChanges();
     expect(component.bugForm.invalid).toBeTruthy();
   })
   //9-d
-  it('form should be valid if reporter is QA', () => {
+  fit('form should be valid if reporter is QA', () => {
     component.initializeForm('title', 'description', '1', 'QA', 'Done')
     expect(component.bugForm.valid).toBeTruthy();
   })

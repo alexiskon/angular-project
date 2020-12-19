@@ -133,9 +133,6 @@ export class BugFormComponent implements OnInit, FormComponent, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log(this.subs)
     this.subs.unsubscribe();
-    console.log(this.subs)
-
   }
 }

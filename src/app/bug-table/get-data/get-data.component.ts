@@ -85,6 +85,8 @@ export class GetDataComponent implements OnInit, OnDestroy {
   }
 
   searchRequest() {
+    this.counters = [0, 0, 0, 0, 0];
+    this.sortDesc = [false, true, false, true, false];
     this.pageNumber = 0;
     this.nextPageCheck();
     this.clearParams();
